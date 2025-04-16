@@ -5,7 +5,7 @@ False               Echo               - Echo input data to <RootName>.ech? (fla
 FATAL              AbortLevel         - Error level when simulation should abort (string) {"WARNING", "SEVERE", "FATAL"}
 900                TMax               - Total run time (s) [>=0.0]
 False              UseSC              - Use a super controller? (flag)
-2                  Mod_AmbWind        - Ambient wind model (-) (switch) {1: high-fidelity precursor in VTK format, 2: InflowWind module}
+3                  Mod_AmbWind        - Ambient wind model (-) (switch) {1: high-fidelity precursor in VTK format, 2: one InflowWind module, 3: multiple instances of InflowWind module}
 1                  Mod_WaveField      - Wave field handling (-) (switch) {1: use individual HydroDyn inputs without adjustment, 2: adjust wave phases based on turbine offsets from farm origin}
 0                  Mod_SharedMooring  - Shared mooring system model (switch) {0: None, 3=MoorDyn}}
 --- SUPER CONTROLLER --- [used only for UseSC=True]
@@ -20,7 +20,7 @@ False              WrMooringVis       - Write shared mooring visualization, at D
 "Unused"           WindFilePath       - Path name to wind data files from precursor (string)
 False              ChkWndFiles        - Check all the ambient wind files for data consistency? (flag)
 --- AMBIENT WIND: INFLOWWIND MODULE --- [used only for Mod_AmbWind=2 or 3]
-2                  DT_low             - Time step for low -resolution wind data interpolation; will be used as the global FAST.Farm time step (s) [>0.0]
+2                  DT_Low             - Time step for low -resolution wind data interpolation; will be used as the global FAST.Farm time step (s) [>0.0]
 0.2                DT_High            - Time step for high-resolution wind data interpolation (s) [>0.0]
 81                 NX_Low             - Number  of low -resolution spatial nodes in X direction for wind data interpolation (-) [>=2]
 76                 NY_Low             - Number  of low -resolution spatial nodes in Y direction for wind data interpolation (-) [>=2]
@@ -36,7 +36,7 @@ False              ChkWndFiles        - Check all the ambient wind files for dat
 21                 NZ_High            - Number  of high-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
 "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_InflowFile.dat"   InflowFile         - Name of file containing InflowWind module input parameters (quoted string)
 --- WIND TURBINES ---
-3                  NumTurbines        - Number of wind turbines (-) [>=1]                          [last 6 columns used only for Mod_AmbWind=2]
+3                  NumTurbines        - Number of wind turbines (-) [>=1]                          [last 6 columns below used only for Mod_AmbWind=2 or 3]
 WT_X    WT_Y   WT_Z    WT_FASTInFile                                                  X0_High  Y0_High  Z0_High  dX_High  dY_High  dZ_High
 (m)      (m)    (m)    (string)                                                           (m)      (m)      (m)      (m)      (m)      (m)
 -780 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T1.fst"             -820 -80  5             5  10  10
@@ -48,14 +48,14 @@ WT_X    WT_Y   WT_Z    WT_FASTInFile                                            
 5.0                dr                 - Radial increment of radial finite-difference grid (m) [>0.0]
 40                 NumRadii           - Number of radii in the radial finite-difference grid (-) [>=2]
 95                 NumPlanes          - Number of wake planes (-) [>=2]
-DEFAULT            f_c                - Cut-off (corner) frequency of the low-pass time-filter for the wake advection, deflection, and meandering model (Hz) [>0.0] or DEFAULT [DEFAULT=0.0007]
+0.14               f_c                - Cutoff (corner) frequency of the low-pass time-filter for the wake advection, deflection, and meandering model [recommended=1.28*U0/R] (Hz) [>0.0] or DEFAULT [DEFAULT=12.5/R, R estimated from dr and NumRadii, not recommended]
 DEFAULT            C_HWkDfl_O         - Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor                                               (m    ) or DEFAULT [DEFAULT= 0.0  ]
-DEFAULT            C_HWkDfl_OY        - Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor scaled with                         yaw error (m/deg) or DEFAULT [DEFAULT= 0.3  ]
+DEFAULT            C_HWkDfl_OY        - Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor scaled with                         yaw error (m/deg) or DEFAULT [DEFAULT= 0.0 if Mod_Wake is 2, 0.3 otherwise]
 DEFAULT            C_HWkDfl_x         - Calibrated parameter in the correction for wake deflection defining the horizontal offset              scaled with downstream distance               (-    ) or DEFAULT [DEFAULT= 0.0  ]
-DEFAULT            C_HWkDfl_xY        - Calibrated parameter in the correction for wake deflection defining the horizontal offset              scaled with downstream distance and yaw error (1/deg) or DEFAULT [DEFAULT=-0.004]
-DEFAULT            C_NearWake         - Calibrated parameter for the near-wake correction (-) [>1.0] or DEFAULT [DEFAULT=1.8]
-DEFAULT            k_vAmb             - Calibrated parameter for the influence of ambient turbulence in the eddy viscosity (-) [>=0.0] or DEFAULT [DEFAULT=0.05 ]
-DEFAULT            k_vShr             - Calibrated parameter for the influence of the shear layer    in the eddy viscosity (-) [>=0.0] or DEFAULT [DEFAULT=0.016]
+DEFAULT            C_HWkDfl_xY        - Calibrated parameter in the correction for wake deflection defining the horizontal offset              scaled with downstream distance and yaw error (1/deg) or DEFAULT [DEFAULT= 0.0 if Mod_Wake is 2, -0.004 otherwise]
+DEFAULT            C_NearWake         - Calibrated parameter for the near-wake correction (-) [>1.0 and <2.5] or DEFAULT [DEFAULT=1.8]
+DEFAULT            k_vAmb        - Calibrated parameters for the influence of the ambient turbulence in the eddy viscosity (set of 5 parameters: k, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=0.05, 1.0, 0.0, 1.0, 0.01]
+DEFAULT            k_vShr        - Calibrated parameters for the influence of the shear layer in the eddy viscosity (set of 5 parameters: k, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=0.016, 0.2, 3.0, 25.0, 0.1]
 DEFAULT            Mod_WakeDiam       - Wake diameter calculation model (-) (switch) {1: rotor diameter, 2: velocity based, 3: mass-flux based, 4: momentum-flux based} or DEFAULT [DEFAULT=1]
 DEFAULT            C_WakeDiam         - Calibrated parameter for wake diameter calculation (-) [>0.0 and <0.99] or DEFAULT [DEFAULT=0.95] [unused for Mod_WakeDiam=1]
 DEFAULT            Mod_Meander        - Spatial filter model for wake meandering (-) (switch) {1: uniform, 2: truncated jinc, 3: windowed jinc} or DEFAULT [DEFAULT=3]
@@ -72,21 +72,21 @@ DEFAULT            Mod_Projection     - Switch to select how the wake plane velo
 2                  WAT                - Switch between wake-added turbulence box options {0: no wake added turbulence, 1: predefined turbulence box, 2: user defined turbulence box} (switch)
 "/projects/windse/cbay/FASTFarm_TUM_surrogate/DTUMannBoxes_NREL_format/FFDB_D130_256x32x32.u" WAT_BoxFile  - Filepath to the file containing the u-component of the turbulence box (either predefined or user-defined) (quoted string)
 256, 32, 32                     WAT_NxNyNz         - Number of points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1] (-)
-8.0, 8.0, 8.0                   WAT_DxDyDz         - Distance (in meters) between points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1] (m)
-default                         WAT_ScaleBox       - Flag to scale the input turbulence box to zero mean and unit standard deviation at every node [DEFAULT=False] (flag)
-1.44, 0.0, 0.0, 2.0, 1.0        WAT_k_Def          - Calibrated parameters for the influence of the maximum wake deficit on wake-added turbulence (set of 5 parameters: k_Def, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[0.6, 0.0, 0.0, 2.0, 1.0 ]]
-0.84, 0.0, 0.0, 12.0, 0.65      WAT_k_Grad         - Calibrated parameters for the influence of the radial velocity gradient of the wake deficit on wake-added turbulence (set of 5 parameters: k_Grad, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[3.0, 0.0, 0.0, 12.0, 0.65]
+8.0, 8.0, 8.0      WAT_DxDyDz         - Distance (in meters) between points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1] (m)
+default            WAT_ScaleBox       - Flag to scale the input turbulence box to zero mean and unit standard deviation at every node [DEFAULT=False] (flag)
+default            WAT_k_Def          - Calibrated parameters for the influence of the maximum wake deficit on wake-added turbulence (set of 5 parameters: k_Def, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[0.6, 0.0, 0.0, 2.0, 1.0 ]]
+default            WAT_k_Grad         - Calibrated parameters for the influence of the radial velocity gradient of the wake deficit on wake-added turbulence (set of 5 parameters: k_Grad, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[3.0, 0.0, 0.0, 12.0, 0.65]
 --- VISUALIZATION ---
 False              WrDisWind          - Write low- and high-resolution disturbed wind data to <RootName>.Low.Dis.t<n>.vtk etc.? (flag)
-0                  NOutDisWindXY      - Number of XY planes for output of disturbed wind data across the low-resolution domain to <RootName>.Low.DisXY<n_out>.t<n>.vtk (-) [0 to 9]
+0                  NOutDisWindXY      - Number of XY planes for output of disturbed wind data across the low-resolution domain to <RootName>.Low.DisXY<n_out>.t<n>.vtk (-) [0 to 999]
 110.0              OutDisWindZ        - Z coordinates of XY planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindXY] [unused for NOutDisWindXY=0]
-0                  NOutDisWindYZ      - Number of YZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisYZ<n_out>.t<n>.vtk (-) [0 to 9]
+0                  NOutDisWindYZ      - Number of YZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisYZ<n_out>.t<n>.vtk (-) [0 to 999]
 -780, 0, 780       OutDisWindX        - X coordinates of YZ planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindYZ] [unused for NOutDisWindYZ=0]
-0                  NOutDisWindXZ      - Number of XZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisXZ<n_out>.t<n>.vtk (-) [0 to 9]
+0                  NOutDisWindXZ      - Number of XZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisXZ<n_out>.t<n>.vtk (-) [0 to 999]
 0.0                OutDisWindY        - Y coordinates of XZ planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindXZ] [unused for NOutDisWindXZ=0]
-2                  WrDisDT            - Time step for disturbed wind visualization output (s) [>0.0] or DEFAULT [DEFAULT=DT] [unused for WrDisWind=False and NOutDisWindXY=NOutDisWindYZ=NOutDisWindXZ=0]
+2.0                WrDisDT            - Time step for disturbed wind visualization output (s) [>0.0] or DEFAULT [DEFAULT=DT_Low or DT_Low-VTK] [unused for WrDisWind=False and NOutDisWindXY=NOutDisWindYZ=NOutDisWindXZ=0]
 --- OUTPUT ---
-False               SumPrint           - Print summary data to <RootName>.sum? (flag)
+False              SumPrint           - Print summary data to <RootName>.sum? (flag)
 99999.9            ChkptTime          - Amount of time between creating checkpoint files for potential restart (s) [>0.0]
 0                  TStart             - Time to begin tabular output (s) [>=0.0]
 1                  OutFileFmt         - Format for tabular (time-marching) output file (switch) {1: text file [<RootName>.out], 2: binary file [<RootName>.outb], 3: both}
@@ -94,14 +94,14 @@ True               TabDelim           - Use tab delimiters in text tabular outpu
 "ES10.3E2"         OutFmt             - Format used for text tabular output, excluding the time channel.  Resulting field should be 10 characters. (quoted string)
 DEFAULT            OutAllPlanes       - Output all wake planes at all time steps. [DEFAULT=False]
 0                  NOutRadii          - Number of radial nodes         for wake output for an individual rotor (-) [0 to 20]
-0                  OutRadii           - List of radial nodes         for wake output for an individual rotor (-) [1 to NOutRadii] [unused for NOutRadii=0]
+0                  OutRadii     - List of radial nodes         for wake output for an individual rotor (-) [1 to NOutRadii] [unused for NOutRadii=0]
 0                  NOutDist           - Number of downstream distances for wake output for an individual rotor (-) [0 to 9 ]
 0                  OutDist            - List of downstream distances for wake output for an individual rotor (m) [1 to NOutDist ] [unused for NOutDist =0]
 0                  NWindVel           - Number of points for wind output (-) [0 to 9]
 0                  WindVelX           - List of coordinates in the X direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
 0                  WindVelY           - List of coordinates in the Y direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
 0                  WindVelZ           - List of coordinates in the Z direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
-OutList            The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels (quoted string)
+                   OutList            - The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels (quoted string)
 "TIAmbT1"
 "RtVAmbT1"
 "TIAmbT2"
