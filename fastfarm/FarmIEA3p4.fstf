@@ -86,7 +86,7 @@ False              WrDisWind          - Write low- and high-resolution disturbed
 0.0                OutDisWindY        - Y coordinates of XZ planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindXZ] [unused for NOutDisWindXZ=0]
 2                  WrDisDT            - Time step for disturbed wind visualization output (s) [>0.0] or DEFAULT [DEFAULT=DT] [unused for WrDisWind=False and NOutDisWindXY=NOutDisWindYZ=NOutDisWindXZ=0]
 --- OUTPUT ---
-True               SumPrint           - Print summary data to <RootName>.sum? (flag)
+False               SumPrint           - Print summary data to <RootName>.sum? (flag)
 99999.9            ChkptTime          - Amount of time between creating checkpoint files for potential restart (s) [>0.0]
 0                  TStart             - Time to begin tabular output (s) [>=0.0]
 1                  OutFileFmt         - Format for tabular (time-marching) output file (switch) {1: text file [<RootName>.out], 2: binary file [<RootName>.outb], 3: both}
