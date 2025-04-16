@@ -39,9 +39,9 @@ False              ChkWndFiles        - Check all the ambient wind files for dat
 3                  NumTurbines        - Number of wind turbines (-) [>=1]                          [last 6 columns used only for Mod_AmbWind=2]
 WT_X    WT_Y   WT_Z    WT_FASTInFile                                                  X0_High  Y0_High  Z0_High  dX_High  dY_High  dZ_High
 (m)      (m)    (m)    (string)                                                           (m)      (m)      (m)      (m)      (m)      (m)
--780 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT.fst"             -820 -80  5             5  10  10
-0 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT.fst"             -40 -80  5                 5  10  10 
-780 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT.fst"             740 -80  5               5  10  10
+-780 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T1.fst"             -820 -80  5             5  10  10
+0 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T2.fst"             -40 -80  5                 5  10  10 
+780 0 0.0    "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T3.fst"             740 -80  5               5  10  10
 --- WAKE DYNAMICS ---
 1                  Mod_Wake           - Switch between wake formulations {1:Polar, 2:Curl, 3:Cartesian} (-) (switch)
 130                RotorDiamRef       - Reference turbine rotor diameter for wake calculations (m) [>0.0]
