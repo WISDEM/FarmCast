@@ -1,0 +1,379 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
+$id: fastfarm_schema_v00
+title: FastFarm input options schema
+description: Schema that describes a subset of the input options to FASTFarm runs
+type: object
+properties:
+    FASTFarm:
+        type: object
+        default: {}
+        description: Options for FASTFarm main .fsft file
+        properties:
+            Echo:
+                type: boolean
+                default: false
+                description: Echo input data to <RootName>.ech? (flag)
+            AbortLevel:
+                type: string
+                default: "FATAL"
+                description: Error level when simulation should abort (string) {"WARNING", "SEVERE", "FATAL"}
+            TMax:
+                type: number
+                default: 900
+                description: Total run time (s) [>=0.0]
+            UseSC:
+                type: boolean
+                default: false
+                description: Use a super controller? (flag)
+            Mod_AmbWind:
+                type: integer
+                default: 3
+                description: Ambient wind model (-) (switch) {1: high-fidelity precursor in VTK format, 2: one InflowWind module, 3: multiple instances of InflowWind module}
+            Mod_WaveField:
+                type: integer
+                default: 1
+                description: Wave field handling (-) (switch) {1: use individual HydroDyn inputs without adjustment, 2: adjust wave phases based on turbine offsets from farm origin} 
+            Mod_SharedMooring:
+                type: integer
+                default: 0
+                description: Shared mooring system model (switch) {0: None, 3=MoorDyn}
+            SC_FileName:
+                type: string
+                default: "unused.dll"
+                description: Name/location of the dynamic library {.dll [Windows] or .so [Linux]} containing the Super Controller algorithms (quoted string)
+            SharedMoorFile:
+                type: string
+                default: ""
+                description: Name of file containing shared mooring system input parameters (quoted string) [used only when Mod_SharedMooring > 0]
+            DT_Mooring: 
+                type: number
+                default: 0.04
+                description: Time step for farm-level mooring coupling with each turbine (s) [used only when Mod_SharedMooring > 0]
+            WrMooringVis:
+                type: boolean
+                default: false
+                description: Write shared mooring visualization, at DT_Mooring timestep (-) [only used for Mod_SharedMooring=3]
+            DT_Low_VTK:
+                type: number
+                default: 1.0
+                description: Time step for low-resolution wind data input files; will be used as the global FAST.Farm time step (s) [>0.0]
+            DT_High_VTK:
+                type: number
+                default: 0.1
+                description: Time step for high-resolution wind data input files (s) [>0.0]
+            WindFilePath: 
+                type: string
+                default: "Unused"
+                description: Path name to wind data files from precursor (string)
+            ChkWndFiles:
+                type: boolean
+                default: false
+                description: Check all the ambient wind files for data consistency? (flag)
+            DT_Low:
+                type: number
+                default: 2.0
+                description: Time step for low-resolution wind data interpolation; will be used as the global FAST.Farm time step (s) [>0.0]
+            DT_High:
+                type: number
+                default: 0.2
+                description: Time step for high-resolution wind data interpolation (s) [>0.0]
+            NX_Low:
+                type: integer
+                default: 81
+                description: Number of low-resolution spatial nodes in X direction for wind data interpolation (-) [>=2]
+            NY_Low:
+                type: integer
+                default: 76
+                description: Number of low-resolution spatial nodes in Y direction for wind data interpolation (-) [>=2]
+            NZ_Low:
+                type: integer
+                default: 23
+                description: Number of low-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
+            X0_Low:
+                type: number
+                default: -850
+                description: Origin of low-resolution spatial nodes in X direction for wind data interpolation (m)
+            Y0_Low:
+                type: number
+                default: -500
+                description: Origin of low-resolution spatial nodes in Y direction for wind data interpolation (m)
+            Z0_Low:
+                type: number
+                default: 5
+                description: Origin of low-resolution spatial nodes in Z direction for wind data interpolation (m)
+            dX_Low:
+                type: number
+                default: 25
+                description: Spacing of low-resolution spatial nodes in X direction for wind data interpolation (m) [>0.0]
+            dY_Low:
+                type: number
+                default: 13
+                description: Spacing of low-resolution spatial nodes in Y direction for wind data interpolation (m) [>0.0]
+            dZ_Low:
+                type: number
+                default: 13
+                description: Spacing of low-resolution spatial nodes in Z direction for wind data interpolation (m) [>0.0]
+            NX_High:
+                type: integer
+                default: 17
+                description: Number of high-resolution spatial nodes in X direction for wind data interpolation (-) [>=2]
+            NY_High:
+                type: integer
+                default: 17
+                description: Number of high-resolution spatial nodes in Y direction for wind data interpolation (-) [>=2]
+            NZ_High:  
+                type: integer
+                default: 21
+                description: Number of high-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
+            InflowFile:
+                type: string
+                default: "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_InflowFile.dat"
+                description: Name of file containing InflowWind module input parameters (quoted string)
+            NumTurbines:
+                type: integer
+                default: 3
+                description: Number of wind turbines (-) [>=1]
+            Mod_Wake:
+                type: integer
+                default: 1
+                description: Switch between wake formulations {1:Polar, 2:Curl, 3:Cartesian} (-) (switch)
+            RotorDiamRef:
+                type: number
+                default: 130
+                description: Reference turbine rotor diameter for wake calculations (m) [>0.0]
+            dr:
+                type: number
+                default: 5.0
+                description: Radial increment of radial finite-difference grid (m) [>0.0]
+            NumRadii:
+                type: integer
+                default: 40
+                description: Number of radii in the radial finite-difference grid (-) [>=2]
+            NumPlanes:
+                type: integer
+                default: 95
+                description: Number of wake planes (-) [>=2]
+            f_c:
+                type: number
+                default: 0.14
+                description: Cutoff (corner) frequency of the low-pass time-filter for the wake advection, deflection, and meandering model [recommended=1.28*U0/R] (Hz) [>0.0] or DEFAULT [DEFAULT=12.5/R, R estimated from dr and NumRadii, not recommended]
+            C_HWkDfl_O:
+                type: number
+                default: 0.0
+                description: Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor (m) or DEFAULT [DEFAULT= 0.0]
+            C_HWkDfl_OY:
+                type: number
+                default: 0.0
+                description: Calibrated parameter in the correction for wake deflection defining the horizontal offset at the rotor scaled with yaw error (m/deg) or DEFAULT [DEFAULT= 0.0 if Mod_Wake is 2, 0.3 otherwise]
+            C_HWkDfl_x:
+                type: number
+                default: 0.0
+                description: Calibrated parameter in the correction for wake deflection defining the horizontal offset scaled with downstream distance (m) or DEFAULT [DEFAULT= 0.0]
+            C_HWkDfl_xY:
+                type: number
+                default: 0.0
+                description: Calibrated parameter in the correction for wake deflection defining the horizontal offset scaled with downstream distance and yaw error (1/deg) or DEFAULT [DEFAULT= 0.0 if Mod_Wake is 2, -0.004 otherwise]
+            C_NearWake:
+                type: number
+                default: 1.8
+                description: Calibrated parameter for the near-wake correction (-) [>1.0 and <2.5] or DEFAULT [DEFAULT=1.8]
+            k_vAmb:
+                type: array
+                items:
+                    type: number
+                default: [0.05, 1.0, 0.0, 1.0, 0.01]
+                description: Calibrated parameters for the influence of the ambient turbulence in the eddy viscosity (set of 5 parameters: k, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=0.05, 1.0, 0.0, 1.0, 0.01]
+            k_vShr:
+                type: array
+                items:
+                    type: number
+                default: [0.016, 0.2, 3.0, 25.0, 0.1]
+                description: Calibrated parameters for the influence of the shear layer in the eddy viscosity (set of 5 parameters: k, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=0.016, 0.2, 3.0, 25.0, 0.1]
+            Mod_WakeDiam:
+                type: integer
+                default: 1
+                description: Wake diameter calculation model (-) (switch) {1: rotor diameter, 2: velocity based, 3: mass-flux based, 4: momentum-flux based} or DEFAULT [DEFAULT=1]
+            C_WakeDiam: 
+                type: number
+                default: 0.95
+                description: Calibrated parameter for wake diameter calculation (-) [>0.0 and <0.99] or DEFAULT [DEFAULT=0.95] [unused for Mod_WakeDiam=1]
+            Mod_Meander:  
+                type: integer
+                default: 3
+                description: Spatial filter model for wake meandering (-) (switch) {1: uniform, 2: truncated jinc, 3: windowed jinc} or DEFAULT [DEFAULT=3]
+            C_Meander:
+                type: number
+                default: 1.9
+                description: Calibrated parameter for wake meandering (-) [>=1.0] or DEFAULT [DEFAULT=1.9]
+            Swirl:
+                type: boolean
+                default: true
+                description: Switch to include swirl velocities in wake (-) (switch) [DEFAULT=TRUE]
+            k_VortexDecay:
+                type: number
+                default: 0.0001
+                description: Vortex decay constant for curl (-) [DEFAULT=0.0001]
+            NumVortices:
+                type: integer
+                default: 100
+                description: The number of vortices in the curled wake model (-) [DEFAULT=100]
+            sigma_D:
+                type: number
+                default: 0.2
+                description: The width of the vortices in the curled wake model non-dimesionalized by rotor diameter (-) [DEFAULT=0.2]
+            FilterInit:
+                type: integer
+                default: 1
+                description: Switch to filter the initial wake plane deficit and select the number of grid points for the filter {0: no filter, 1: filter of size 1} or DEFAULT [DEFAULT=1] [unused for Mod_Wake=1] (switch)
+            k_vCurl:
+                type: number
+                default: 2.0
+                description: Calibrated parameter for scaling the eddy viscosity in the curled-wake model (-) [>=0] or DEFAULT [DEFAULT=2.0]
+            Mod_Projection:
+                type: integer
+                default: 1
+                description: Switch to select how the wake plane velocity is projected in AWAE {1: keep all components, 2: project against plane normal} or DEFAULT [DEFAULT=1: if Mod_Wake is 1 or 3, or DEFAULT=2: if Mod_Wake is 2] (switch)
+            WAT:
+                type: integer
+                default: 2
+                description: Switch between wake-added turbulence box options {0: no wake added turbulence, 1: predefined turbulence box, 2: user defined turbulence box} (switch)
+            WAT_BoxFile:
+                type: string
+                default: "/projects/windse/cbay/FASTFarm_TUM_surrogate/DTUMannBoxes_NREL_format/FFDB_D130_256x32x32.u"
+                description: Filepath to the file containing the u-component of the turbulence box (either predefined or user-defined) (quoted string)
+            WAT_NxNyNz:
+                type: array
+                items:
+                    type: integer
+                default: [256, 32, 32]
+                description: Number of points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1] (-)
+            WAT_DxDyDz:
+                type: array
+                items:
+                    type: number
+                default: [8.0, 8.0, 8.0]
+                description: Distance (in meters) between points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1] (m)
+            WAT_ScaleBox:
+                type: boolean
+                default: false
+                description: Flag to scale the input turbulence box to zero mean and unit standard deviation at every node [DEFAULT=False] (flag)
+            WAT_k_Def:
+                type: array
+                items:
+                    type: number
+                default: [0.6, 0.0, 0.0, 2.0, 1.0]
+                description: Calibrated parameters for the influence of the maximum wake deficit on wake-added turbulence (set of 5 parameters: k_Def, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[0.6, 0.0, 0.0, 2.0, 1.0 ]]
+            WAT_k_Grad:
+                type: array
+                items:
+                    type: number
+                default: [3.0, 0.0, 0.0, 12.0, 0.65]
+                description: Calibrated parameters for the influence of the radial velocity gradient of the wake deficit on wake-added turbulence (set of 5 parameters: k_Grad, FMin, DMin, DMax, Exp) (-) [>=0.0, >=0.0 and <=1.0, >=0.0, >DMin, >=0.0] or DEFAULT [DEFAULT=[3.0, 0.0, 0.0, 12.0, 0.65]
+            WrDisWind:  
+                type: boolean
+                default: false
+                description: Write low- and high-resolution disturbed wind data to <RootName>.Low.Dis.t<n>.vtk etc.? (flag)
+            NOutDisWindXY:  
+                type: integer
+                default: 0
+                description: Number of XY planes for output of disturbed wind data across the low-resolution domain to <RootName>.Low.DisXY<n_out>.t<n>.vtk (-) [0 to 999]
+            OutDisWindZ:
+                type: number
+                default: 110.0
+                description: Z coordinates of XY planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindXY] [unused for NOutDisWindXY=0]
+            NOutDisWindYZ:
+                type: integer
+                default: 0
+                description: Number of YZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisYZ<n_out>.t<n>.vtk (-) [0 to 999]
+            OutDisWindX:
+                type: array
+                items:
+                    type: number
+                default: [-780, 0, 780]
+                description: X coordinates of YZ planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindYZ] [unused for NOutDisWindYZ=0]
+            NOutDisWindXZ:
+                type: integer
+                default: 0
+                description: Number of XZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisXZ<n_out>.t<n>.vtk (-) [0 to 999]
+            OutDisWindY:
+                type: number
+                default: 0.0
+                description: Y coordinates of XZ planes for output of disturbed wind data across the low-resolution domain (m) [1 to NOutDisWindXZ] [unused for NOutDisWindXZ=0]
+            WrDisDT:
+                type: number
+                default: 2.0
+                description: Time step for disturbed wind visualization output (s) [>0.0] or DEFAULT [DEFAULT=DT_Low or DT_Low-VTK] [unused for WrDisWind=False and NOutDisWindXY=NOutDisWindYZ=NOutDisWindXZ=0]
+            SumPrint:
+                type: boolean
+                default: false
+                description: Print summary data to <RootName>.sum? (flag)
+            ChkptTime:
+                type: number
+                default: 99999.9
+                description: Amount of time between creating checkpoint files for potential restart (s) [>0.0]
+            TStart:
+                type: number
+                default: 0
+                description: Time to begin tabular output (s) [>=0.0]
+            OutFileFmt:
+                type: integer
+                default: 1
+                description: Format for tabular (time-marching) output file (switch) {1: text file [<RootName>.out], 2: binary file [<RootName>.outb], 3: both}
+            TabDelim: 
+                type: boolean
+                default: true
+                description: Use tab delimiters in text tabular output file? (flag) {uses spaces if False}
+            OutFmt: 
+                type: string
+                default: "ES10.3E2"
+                description: Format used for text tabular output, excluding the time channel.  Resulting field should be 10 characters. (quoted string)
+            OutAllPlanes:
+                type: boolean
+                default: false
+                description: Output all wake planes at all time steps. [DEFAULT=False]
+            NOutRadii:
+                type: integer
+                default: 0
+                description: Number of radial nodes for wake output for an individual rotor (-) [0 to 20]
+            OutRadii:
+                type: array
+                items:
+                    type: number
+                default: []
+                description: List of radial nodes for wake output for an individual rotor (-) [1 to NOutRadii] [unused for NOutRadii=0]
+            NOutDist:
+                type: integer
+                default: 0
+                description: Number of downstream distances for wake output for an individual rotor (-) [0 to 9 ]
+            OutDist:  
+                type: array
+                items:
+                    type: number
+                default: []
+                description: List of downstream distances for wake output for an individual rotor (m) [1 to NOutDist ] [unused for NOutDist =0]
+            NWindVel:
+                type: integer
+                default: 0
+                description: Number of points for wind output (-) [0 to 9]
+            WindVelX:
+                type: array
+                items:
+                    type: number
+                default: []
+                description: List of coordinates in the X direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
+            WindVelY:
+                type: array
+                items:
+                    type: number
+                default: []
+                description: List of coordinates in the Y direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
+            WindVelZ:
+                type: array
+                items:
+                    type: number
+                default: []
+                description: List of coordinates in the Z direction for wind output (m) [1 to NWindVel] [unused for NWindVel=0]
+            OutList:
+                type: string
+                default: "TIAmbT1, RtVAmbT1, TIAmbT2, RtVAmbT2, TIAmbT3, RtVAmbT3"
+                description: The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels (quoted string)
