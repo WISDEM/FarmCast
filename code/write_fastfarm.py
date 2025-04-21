@@ -1,6 +1,16 @@
 from ruamel.yaml import YAML
 
 def generate_fsft(fsft_vt, output_path):
+    """
+    Generate a FAST.Farm input file based on the provided fsft_vt dictionary.
+    Args:
+        fsft_vt (dict): Dictionary containing the FAST.Farm input parameters.
+        output_path (str): Path to the output FAST.Farm input file.
+    """
+    # Check if the output path is valid
+    if not output_path.endswith('.fstf'):
+        raise ValueError("Output path must end with '.fstf'")
+
 
     with open(output_path, 'w') as fsft_file:
         fsft_file.write("------- FAST.Farm for OpenFAST INPUT FILE -------------------------------------------------\n")
@@ -13,7 +23,7 @@ def generate_fsft(fsft_vt, output_path):
                 description = value.get('description', '').split('(')[0].strip()
                 if isinstance(default, list):
                     default = ', '.join(map(str, default))
-                if default is False:
+                elif default is False:
                     default = "False"
                 elif isinstance(default, str):
                     default = f"\"{default}\""
@@ -46,6 +56,10 @@ def generate_fsft(fsft_vt, output_path):
         fsft_file.write('END of input file (the word "END" must appear in the first 3 columns of this last OutList line)\n')
         fsft_file.close()
 
+    print(f"FAST.Farm input file generated at {output_path}")
+
+    return None
+
 if __name__ == "__main__":
     schema_path = "/Users/pbortolo/work/3_projects/30_HolisticSE/FarmCast/code/fast_farm_schema.yaml"
 
@@ -71,4 +85,4 @@ if __name__ == "__main__":
 
     output_path = "/Users/pbortolo/work/3_projects/30_HolisticSE/FarmCast/fastfarm/generated.FarmIEA3p4.fstf"
     generate_fsft(fsft_vt, output_path)
-    print(f"Generated .fsft file at {output_path}")
+

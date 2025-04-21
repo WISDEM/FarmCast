@@ -54,8 +54,8 @@ WT_X    WT_Y   WT_Z    WT_FASTInFile
 0.0                  C_HWkDfl_x           - Calibrated parameter in the correction for wake deflection defining the horizontal offset scaled with downstream distance
 0.0                  C_HWkDfl_xY          - Calibrated parameter in the correction for wake deflection defining the horizontal offset scaled with downstream distance and yaw error
 1.8                  C_NearWake           - Calibrated parameter for the near-wake correction
-"0.05, 1.0, 0.0, 1.0, 0.01" k_vAmb               - Calibrated parameters for the influence of the ambient turbulence in the eddy viscosity
-"0.016, 0.2, 3.0, 25.0, 0.1" k_vShr               - Calibrated parameters for the influence of the shear layer in the eddy viscosity
+0.05, 1.0, 0.0, 1.0, 0.01 k_vAmb               - Calibrated parameters for the influence of the ambient turbulence in the eddy viscosity
+0.016, 0.2, 3.0, 25.0, 0.1 k_vShr               - Calibrated parameters for the influence of the shear layer in the eddy viscosity
 1                    Mod_WakeDiam         - Wake diameter calculation model
 0.95                 C_WakeDiam           - Calibrated parameter for wake diameter calculation
 3                    Mod_Meander          - Spatial filter model for wake meandering
@@ -71,17 +71,17 @@ True                 Swirl                - Switch to include swirl velocities i
 --- WAKE-ADDED TURBULENCE ---
 2                    WAT                  - Switch between wake-added turbulence box options 0) no wake added turbulence, 1) predefined turbulence box, 2) user defined turbulence box
 "/projects/windse/cbay/FASTFarm_TUM_surrogate/DTUMannBoxes_NREL_format/FFDB_D130_256x32x32.u" WAT_BoxFile          - Filepath to the file containing the u-component of the turbulence box
-"256, 32, 32"        WAT_NxNyNz           - Number of points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1]
-"8.0, 8.0, 8.0"      WAT_DxDyDz           - Distance
+256, 32, 32          WAT_NxNyNz           - Number of points in the x, y, and z directions of the WAT_BoxFile [used only if WAT=2, derived value if WAT=1]
+8.0, 8.0, 8.0        WAT_DxDyDz           - Distance
 False                WAT_ScaleBox         - Flag to scale the input turbulence box to zero mean and unit standard deviation at every node [DEFAULT=False]
-"0.6, 0.0, 0.0, 2.0, 1.0" WAT_k_Def            - Calibrated parameters for the influence of the maximum wake deficit on wake-added turbulence
-"3.0, 0.0, 0.0, 12.0, 0.65" WAT_k_Grad           - Calibrated parameters for the influence of the radial velocity gradient of the wake deficit on wake-added turbulence
+0.6, 0.0, 0.0, 2.0, 1.0 WAT_k_Def            - Calibrated parameters for the influence of the maximum wake deficit on wake-added turbulence
+3.0, 0.0, 0.0, 12.0, 0.65 WAT_k_Grad           - Calibrated parameters for the influence of the radial velocity gradient of the wake deficit on wake-added turbulence
 --- VISUALIZATION ---
 False                WrDisWind            - Write low- and high-resolution disturbed wind data to <RootName>.Low.Dis.t<n>.vtk etc.?
 0                    NOutDisWindXY        - Number of XY planes for output of disturbed wind data across the low-resolution domain to <RootName>.Low.DisXY<n_out>.t<n>.vtk
 110.0                OutDisWindZ          - Z coordinates of XY planes for output of disturbed wind data across the low-resolution domain
 0                    NOutDisWindYZ        - Number of YZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisYZ<n_out>.t<n>.vtk
-"-780, 0, 780"       OutDisWindX          - X coordinates of YZ planes for output of disturbed wind data across the low-resolution domain
+-780, 0, 780         OutDisWindX          - X coordinates of YZ planes for output of disturbed wind data across the low-resolution domain
 0                    NOutDisWindXZ        - Number of XZ planes for output of disturbed wind data across the low-resolution domain to <RootName>/Low.DisXZ<n_out>.t<n>.vtk
 0.0                  OutDisWindY          - Y coordinates of XZ planes for output of disturbed wind data across the low-resolution domain
 2.0                  WrDisDT              - Time step for disturbed wind visualization output
@@ -94,12 +94,12 @@ True                 TabDelim             - Use tab delimiters in text tabular o
 "ES10.3E2"           OutFmt               - Format used for text tabular output, excluding the time channel.  Resulting field should be 10 characters.
 False                OutAllPlanes         - Output all wake planes at all time steps. [DEFAULT=False]
 0                    NOutRadii            - Number of radial nodes for wake output for an individual rotor
-""                   OutRadii             - List of radial nodes for wake output for an individual rotor
+                     OutRadii             - List of radial nodes for wake output for an individual rotor
 0                    NOutDist             - Number of downstream distances for wake output for an individual rotor
-""                   OutDist              - List of downstream distances for wake output for an individual rotor
+                     OutDist              - List of downstream distances for wake output for an individual rotor
 0                    NWindVel             - Number of points for wind output
-""                   WindVelX             - List of coordinates in the X direction for wind output
-""                   WindVelY             - List of coordinates in the Y direction for wind output
-""                   WindVelZ             - List of coordinates in the Z direction for wind output
+                     WindVelX             - List of coordinates in the X direction for wind output
+                     WindVelY             - List of coordinates in the Y direction for wind output
+                     WindVelZ             - List of coordinates in the Z direction for wind output
 "TIAmbT1, RtVAmbT1, TIAmbT2, RtVAmbT2, TIAmbT3, RtVAmbT3" OutList              - The next line
 END of input file (the word "END" must appear in the first 3 columns of this last OutList line)
