@@ -129,10 +129,6 @@ properties:
                 type: string
                 default: "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_InflowFile.dat"
                 description: Name of file containing InflowWind module input parameters (quoted string)
-            NumTurbines:
-                type: integer
-                default: 3
-                description: Number of wind turbines (-) [>=1]
             Mod_Wake:
                 type: integer
                 default: 1
