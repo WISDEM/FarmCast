@@ -1,5 +1,3 @@
-from ruamel.yaml import YAML
-
 def generate_fsft(fsft_vt, output_path):
     """
     Generate a FAST.Farm input file based on the provided fsft_vt dictionary.
@@ -59,30 +57,3 @@ def generate_fsft(fsft_vt, output_path):
     print(f"FAST.Farm input file generated at {output_path}")
 
     return None
-
-if __name__ == "__main__":
-    schema_path = "/Users/pbortolo/work/3_projects/30_HolisticSE/FarmCast/code/fast_farm_schema.yaml"
-
-    yaml = YAML(typ='safe')
-    with open(schema_path, 'r') as schema_file:
-        schema = yaml.load(schema_file)
-
-    fsft_vt = schema.get('properties', {}).get('FASTFarm', {}).get('properties', {})
-    fsft_vt["WT_X"] = [-780, 0, 780]
-    fsft_vt["WT_Y"] = [0, 0, 0]
-    fsft_vt["WT_Z"] = [0, 0, 0]
-    fsft_vt["WT_FASTInFile"] = ["../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T1.fst",
-                                "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T2.fst",
-                                "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T3.fst"]
-    fsft_vt["X0_High"] = [-820, -40, 740]
-    fsft_vt["Y0_High"] = [-80, -80, -80]
-    fsft_vt["Z0_High"] = [5, 5, 5]
-    fsft_vt["dX_High"] = [5, 5, 5]
-    fsft_vt["dY_High"] = [10, 10, 10]
-    fsft_vt["dZ_High"] = [10, 10, 10]
-
-
-
-    output_path = "/Users/pbortolo/work/3_projects/30_HolisticSE/FarmCast/fastfarm/generated.FarmIEA3p4.fstf"
-    generate_fsft(fsft_vt, output_path)
-

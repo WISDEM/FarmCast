@@ -1,0 +1,275 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
+$id: turbsim_schema_v00
+title: TurbSim input options schema
+description: Schema that describes a subset of the input options to TurbSim runs
+type: object
+properties:
+    TurbSim:
+        type: object
+        default: {}
+        description: Options for TurbSim main .in file
+        properties:                   
+            flag:
+                type: boolean
+                default: False
+                description: Flag switching between steady wind and turbulent wind grid from TurbSim.
+            Echo:
+                type: boolean
+                default: False
+                description: Echo input data to <RootName>.ech (flag)
+            RandSeed1:
+                type: integer
+                default: 1
+                description: First random seed  (-2147483648 to 2147483647)
+            RandSeed2:
+                default: RANLUX
+                description: Second random seed  (-2147483648 to 2147483647)
+            WrBHHTP:
+                type: boolean
+                default: False
+                description: Output hub-height turbulence parameters in binary form?  (Generates RootName.bin)
+            WrFHHTP:
+                type: boolean
+                default: False
+                description: Output hub-height turbulence parameters in formatted form?  (Generates RootName.dat)
+            WrADHH:
+                type: boolean
+                default: False
+                description: Output hub-height time-series data in AeroDyn form?  (Generates RootName.hh)
+            WrADFF:
+                type: boolean
+                default: True
+                description: Output full-field time-series data in TurbSim/AeroDyn form? (Generates RootName.bts)
+            WrBLFF:
+                type: boolean
+                default: False
+                description: Output full-field time-series data in BLADED/AeroDyn form?  (Generates RootName.wnd)
+            WrADTWR:
+                type: boolean
+                default: False
+                description: Output tower time-series data? (Generates RootName.twr)
+            WrFMTFF:
+                type: boolean
+                default: False
+                description: Output full-field time-series data in formatted (readable) form?  (Generates RootName.u, RootName.v, RootName.w)
+            WrACT:
+                type: boolean
+                default: False
+                description: Output coherent turbulence time steps in AeroDyn form? (Generates RootName.cts)
+            Clockwise:
+                type: boolean
+                default: False
+                description: Clockwise rotation looking downwind? (used only for full-field binary files - not necessary for AeroDyn)
+            ScaleIEC:
+                type: integer
+                enum: [0, 1, 2]
+                default: 0
+                description: Scale IEC turbulence models to exact target standard deviation? [0=no additional scaling; 1=use hub scale uniformly; 2=use individual scales]
+            NumGrid_Z:
+                type: integer
+                default: 25
+                minimum: 5
+                maximum: 100
+                description: Vertical grid-point matrix dimension
+            NumGrid_Y:
+                type: integer
+                default: 25
+                minimum: 5
+                maximum: 100
+                description: Horizontal grid-point matrix dimension
+            TimeStep:
+                type: number
+                default: 0.05
+                minimum: 1.e-4
+                maximum: 1.
+                unit: s
+                description: Time step [seconds]
+            UsableTime:
+                type: string
+                default: 'ALL'
+                description: Usable length of output time series [seconds] (program will add GridWidth/MeanHHWS seconds unless UsableTime is 'ALL')
+            HubHt:
+                type: number
+                default: 0
+                minimum: 0
+                maximum: 5.e+2
+                unit: m
+                description: Hub height [m] (should be > 0.5*GridHeight)
+            GridHeight:
+                type: number
+                default: 0
+                minimum: 0
+                maximum: 5.e+2
+                unit: m
+                description: Grid height [m]
+            GridWidth:
+                type: number
+                default: 0
+                minimum: 0
+                maximum: 5.e+2
+                unit: m
+                description: Grid width [m] (should be >= 2*(RotorRadius+ShaftLength))
+            VFlowAng:
+                type: number
+                default: 0.
+                minimum: -9.e+1
+                maximum: 9.e+1
+                unit: deg
+                description: Vertical mean flow (uptilt) angle [degrees]
+            HFlowAng:
+                type: number
+                default: 0.
+                minimum: -9.e+1
+                maximum: 9.e+1
+                unit: deg
+                description: Horizontal mean flow (skew) angle [degrees]
+            TurbModel:
+                type: string
+                enum: ['IECKAI','IECVKM','GP_LLJ','NWTCUP','SMOOTH','WF_UPW','WF_07D','WF_14D','TIDAL','API','USRINP','TIMESR','NONE']
+                default: IECKAI
+                description: Turbulence model
+            UserFile:
+                type: string
+                default: unused
+                description: Name of the file that contains inputs for user-defined spectra or time series inputs (used only for "USRINP" and "TIMESR" models)
+            IECstandard:
+                type: string
+                default: 1-ED3
+                enum: ['1-ED3', '1-ED2']
+                description: Number of IEC 61400-x standard (x=1,2, or 3 with optional 61400-1 edition number (i.e. "1-Ed2") )
+            ETMc:
+                type: string
+                default: default
+                description: IEC Extreme Turbulence Model
+            WindProfileType:
+                type: string
+                enum: ['LOG','PL','JET','H2L','API','USR','TS','IEC', 'LOG','default']
+                default: PL
+                description: Velocity profile type ('LOG';'PL'=power law;'JET';'H2L'=Log law for TIDAL model;'API';'USR';'TS';'IEC'=PL on rotor disk, LOG elsewhere; or 'default')
+            ProfileFile:
+                type: string
+                default: unused
+                description: Name of the file that contains input profiles for WindProfileType='USR' and/or TurbModel='USRVKM' [-]
+            RefHt:
+                type: number
+                default: 0
+                minimum: 0
+                maximum: 1.e+5
+                unit: m
+                description: Height of the reference velocity (URef) [m]
+            URef:
+                type: number
+                unit: m/s
+                default: -1
+                description: URef is an input to TurbSim, but it's not honored in WEIS.  Please use the wind_speed input to each DLC instead.
+            IECturbc:
+                type: number
+                unit: '(-)'
+                default: -1
+                description: Turbulence intensity (fraction) for custom DLCs, if default (-1), the class letter will be used
+            ZJetMax:
+                type: string
+                default: default
+                description: Jet height [m] (used only for JET velocity profile, valid 70-490 m)
+            PLExp:
+                type: number
+                default: -1
+                description: Power law exponent [-] (or 'default'), if default (-1), the environment option shear_exp will be used for all DLCs
+            Z0:
+                type: string
+                default: default
+                description: Surface roughness length [m] (or 'default')
+            Latitude:
+                type: string
+                default: default
+                description: Site latitude [degrees] (or 'default')
+            RICH_NO:
+                type: number
+                default: 0.05
+                description: Gradient Richardson number [-]
+            UStar:
+                type: string
+                default: default
+                description: Friction or shear velocity [m/s] (or 'default')
+            ZI:
+                type: string
+                default: default
+                description: Mixing layer depth [m] (or 'default')
+            PC_UW:
+                type: string
+                default: default
+                description: Hub mean uw Reynolds stress [m^2/s^2] (or 'default' or 'none')
+            PC_UV:
+                type: string
+                default: default
+                description: Hub mean uv Reynolds stress [m^2/s^2] (or 'default' or 'none')
+            PC_VW:
+                type: string
+                default: default
+                description: Hub mean vw Reynolds stress [m^2/s^2] (or 'default' or 'none')
+            SCMod1:
+                type: string
+                default: default
+                description: u-component coherence model ('GENERAL', 'IEC', 'API', 'NONE', or 'default')
+            SCMod2:
+                type: string
+                default: default
+                description: v-component coherence model ('GENERAL', 'IEC', 'NONE', or 'default')
+            SCMod3:
+                type: string
+                default: default
+                description: w-component coherence model ('GENERAL', 'IEC', 'NONE', or 'default')
+            InCDec1:
+                type: string
+                default: default
+                description: u-component coherence parameters for general or IEC models [-, m^-1] (e.g. '10.0  0.3e-3' in quotes) (or 'default')
+            InCDec2:
+                type: string
+                default: default
+                description: v-component coherence parameters for general or IEC models [-, m^-1] (e.g. '10.0  0.3e-3' in quotes) (or 'default')
+            InCDec3:
+                type: string
+                default: default
+                description: w-component coherence parameters for general or IEC models [-, m^-1] (e.g. '10.0  0.3e-3' in quotes) (or 'default')
+            CohExp:
+                type: string
+                default: default
+                description: Coherence exponent for general model [-] (or 'default')
+            CTEventPath:
+                type: string
+                default: unused
+                description: Name of the path where event data files are located
+            CTEventFile:
+                type: string
+                enum: ['LES','DNS','RANDOM']
+                default: RANDOM
+                description: Type of event files
+            Randomize:
+                type: boolean
+                default: True
+                description: Randomize the disturbance scale and locations? (true/false)
+            DistScl:
+                type: number
+                default: 1.
+                minimum: 0
+                maximum: 1.
+                description: Disturbance scale [-] (ratio of event dataset height to rotor disk). (Ignored when Randomize = true.)
+            CTLy:
+                type: number
+                default: 0.5
+                minimum: 0
+                maximum: 1.
+                description: Fractional location of tower centerline from right [-] (looking downwind) to left side of the dataset. (Ignored when Randomize = true.)
+            CTLz:
+                type: number
+                default: 0.5
+                minimum: 0
+                maximum: 1.
+                description: Fractional location of hub height from the bottom of the dataset. [-] (Ignored when Randomize = true.)
+            CTStartTime:
+                type: number
+                default: 30
+                minimum: 0
+                maximum: 1.e+3
+                unit: s
+                description: Minimum start time for coherent structures in RootName.cts
