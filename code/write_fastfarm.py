@@ -15,6 +15,8 @@ def generate_fsft(fsft_vt, output_path):
                     default = ', '.join(map(str, default))
                 if default is False:
                     default = "False"
+                elif isinstance(default, str):
+                    default = f"\"{default}\""
                 fsft_file.write(f"{str(default):<20} {key:<20} - {description}\n")
                 if key == "Mod_SharedMooring":
                     fsft_file.write("--- SUPER CONTROLLER --- [used only for UseSC=True]\n")
