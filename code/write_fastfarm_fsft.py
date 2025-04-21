@@ -23,6 +23,8 @@ def generate_fsft(fsft_vt, output_path):
                     default = ', '.join(map(str, default))
                 elif default is False:
                     default = "False"
+                elif default is True:
+                    default = "True"
                 elif isinstance(default, str):
                     default = f"\"{default}\""
                 fsft_file.write(f"{str(default):<20} {key:<20} - {description}\n")

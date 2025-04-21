@@ -9,10 +9,6 @@ properties:
         default: {}
         description: Options for TurbSim main .in file
         properties:                   
-            flag:
-                type: boolean
-                default: False
-                description: Flag switching between steady wind and turbulent wind grid from TurbSim.
             Echo:
                 type: boolean
                 default: False
@@ -90,21 +86,21 @@ properties:
                 description: Usable length of output time series [seconds] (program will add GridWidth/MeanHHWS seconds unless UsableTime is 'ALL')
             HubHt:
                 type: number
-                default: 0
+                default: 110.
                 minimum: 0
                 maximum: 5.e+2
                 unit: m
                 description: Hub height [m] (should be > 0.5*GridHeight)
             GridHeight:
                 type: number
-                default: 0
+                default: 210
                 minimum: 0
                 maximum: 5.e+2
                 unit: m
                 description: Grid height [m]
             GridWidth:
                 type: number
-                default: 0
+                default: 210
                 minimum: 0
                 maximum: 5.e+2
                 unit: m
@@ -137,6 +133,15 @@ properties:
                 default: 1-ED3
                 enum: ['1-ED3', '1-ED2']
                 description: Number of IEC 61400-x standard (x=1,2, or 3 with optional 61400-1 edition number (i.e. "1-Ed2") )
+            IECturbc:
+                type: number
+                unit: '(-)'
+                default: -1
+                description: Turbulence intensity (fraction) for custom DLCs, if default (-1), the class letter will be used
+            IEC_WindType:
+                type: string
+                default: "NTM"
+                description: IEC turbulence type ("NTM"=normal, "xETM"=extreme turbulence, "xEWM1"=extreme 1-year wind, "xEWM50"=extreme 50-year wind, where x=wind turbine class 1, 2, or 3)
             ETMc:
                 type: string
                 default: default
@@ -152,7 +157,7 @@ properties:
                 description: Name of the file that contains input profiles for WindProfileType='USR' and/or TurbModel='USRVKM' [-]
             RefHt:
                 type: number
-                default: 0
+                default: 110.
                 minimum: 0
                 maximum: 1.e+5
                 unit: m
@@ -160,13 +165,8 @@ properties:
             URef:
                 type: number
                 unit: m/s
-                default: -1
+                default: 10.
                 description: URef is an input to TurbSim, but it's not honored in WEIS.  Please use the wind_speed input to each DLC instead.
-            IECturbc:
-                type: number
-                unit: '(-)'
-                default: -1
-                description: Turbulence intensity (fraction) for custom DLCs, if default (-1), the class letter will be used
             ZJetMax:
                 type: string
                 default: default

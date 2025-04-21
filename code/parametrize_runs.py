@@ -1,7 +1,7 @@
 from ruamel.yaml import YAML
-from write_fastfarm import generate_fsft
-from openfast_io.turbsim_util import TurbsimWriter
-import os, shutil
+from write_fastfarm_fsft import generate_fsft
+from write_turbsim_in import write_turbsim_in
+import os
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 fastfarm_schema_path = os.path.join(run_dir, "fastfarm_schema.yaml")
@@ -34,10 +34,9 @@ output_path_tsin = os.path.join(run_dir, "inflow_T1.in")
 yaml = YAML(typ='safe')
 with open(turbsim_schema_path, 'r') as schema_file:
     turbsim_schema = yaml.load(schema_file)
-turbsim_schema = turbsim_schema.get('properties', {}).get('TurbSim', {}).get('properties', {})
+turbsim_data = turbsim_schema.get('properties', {}).get('TurbSim', {}).get('properties', {})
 
-tsw = TurbsimWriter(turbsim_schema)
-tsw.execute(output_path_tsin)
+write_turbsim_in(turbsim_data, output_path_tsin)
 
 # # Run TurbSim in sequence
 # wrapper = Turbsim_wrapper()
