@@ -14,9 +14,10 @@ Repository to train a load surrogate model for turbine loads in a wind farm sett
     cd FarmCast
     ```
 
-3. Create an anaconda environment
+3. Create and acivate an anaconda environment
     ```bash
     conda env create -n farmcast-env -f environment.yaml
+    conda activate farmcast-env  
 
 4. Install package:
     ```bash

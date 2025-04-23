@@ -26,10 +26,10 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = [
-    'numpy',
-    'matplotlib',
-    'ruamel.yaml',
     'jsonschema',
+    'matplotlib',
+    'numpy',
+    'ruamel.yaml',
 ]
 
 [project.optional-dependencies]

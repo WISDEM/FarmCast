@@ -1,6 +1,6 @@
 from ruamel.yaml import YAML
 import os
-from validation import DefaultValidatingDraft7Validator
+from farmcast.validation import DefaultValidatingDraft7Validator
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 fastfarm_schema_path = os.path.join(run_dir, "fastfarm_schema.yaml")
