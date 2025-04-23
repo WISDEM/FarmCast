@@ -1,0 +1,43 @@
+name: CI_FarmCast
+
+on: [push, pull_request]
+
+jobs:
+  build-conda:
+    name: Conda Build-Test (Python ${{ matrix.python-version }})
+    runs-on: stable-runners
+
+    defaults:
+      run:
+          shell: bash -el {0}
+
+    strategy:
+      fail-fast: False
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+    - name: checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install conda
+      uses: conda-incubator/setup-miniconda@v3
+      # https://github.com/marketplace/actions/setup-miniconda
+      with:
+        # To use mamba, uncomment here, comment out the miniforge line
+        #mamba-version: "*"
+        miniforge-version: "latest"
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
+        environment-file: environment.yaml
+        activate-environment: test
+        auto-activate-base: false
+        
+    - name: Install repo
+      run: |
+        pip install -e .
+
+    - name: Test with pytest
+      run: |
+        pytest tests
