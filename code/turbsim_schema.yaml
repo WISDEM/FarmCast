@@ -80,6 +80,13 @@ properties:
                 maximum: 1.
                 unit: s
                 description: Time step [seconds]
+            AnalysisTime:
+                type: number
+                default: 10.
+                minimum: 0
+                maximum: 1.e+5
+                unit: s
+                description: Length of analysis time series [seconds] (program will add time if necessary AnalysisTime = MAX(AnalysisTime, UsableTime+GridWidth/MeanHHWS) )
             UsableTime:
                 type: string
                 default: 'ALL'

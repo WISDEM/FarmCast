@@ -3,6 +3,7 @@ from write_turbsim_in import write_turbsim_in
 import os
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
+base_dir = os.path.dirname(run_dir)
 
 fst_vt = {}
 fst_vt["FASTFarm"] = {}
@@ -19,20 +20,10 @@ fst_vt["FASTFarm"]["dX_High"] = [5, 5, 5]
 fst_vt["FASTFarm"]["dY_High"] = [10, 10, 10]
 fst_vt["FASTFarm"]["dZ_High"] = [10, 10, 10]
 
-output_path_fsft = "/Users/pbortolo/work/3_projects/30_HolisticSE/FarmCast/fastfarm/generated.FarmIEA3p4.fstf"
+output_path_fsft = os.path.join(base_dir, "fastfarm", "generated.FarmIEA3p4.fstf")
 generate_fsft(fst_vt, output_path_fsft)
 
-exit()
 # Generate a TurbSim input file based on the provided ts_vt dictionary.
-output_path_tsin = os.path.join(run_dir, "inflow_T1.in")
-ts_vt = {}
-write_turbsim_in(ts_vt, output_path_tsin)
-
-# # Run TurbSim in sequence
-# wrapper = Turbsim_wrapper()
-# wrapper.run_dir = wind_directory
-# #run_dir = os.path.dirname( os.path.dirname( os.path.dirname( os.path.realpath(__file__) ) ) ) + os.sep
-# turbsim_exe = shutil.which('turbsim')
-# wrapper.turbsim_exe = turbsim_exe
-# wrapper.turbsim_input = output_path_tsin
-# wrapper.execute()
+output_path_tsin = os.path.join(base_dir, "inflow", "inflow_T1.in")
+fst_vt["TurbSim"] = {}
+write_turbsim_in(fst_vt, output_path_tsin)
