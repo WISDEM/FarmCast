@@ -1,5 +1,5 @@
-from write_fastfarm_fsft import generate_fsft
-from write_turbsim_in import write_turbsim_in
+from farmcast.write_fastfarm_fsft import generate_fsft
+from farmcast.write_turbsim_in import write_turbsim_in
 import os
 
 run_dir = os.path.dirname(os.path.realpath(__file__))

@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - jsonschema
+  - matplotlib
+  - numpy
+  - pip
+  - python
+  - pytest
+  - ruamel.yaml

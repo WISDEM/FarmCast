@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools >= 40.6.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FarmCast"
+version = "0.1"
+description = "Frameworks to estimate fatigue loads in a wind farm."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Pietro Bortolotti", email = "pietro.bortolotti@nrel.gov" },
+    {name = "Chris Bay", email = "christopher.bay@nrel.gov" },
+]
+license = { file = "LICENSE" }
+keywords = ["FarmCast"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+    'numpy',
+    'matplotlib',
+    'ruamel.yaml',
+    'jsonschema',
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "pydata-sphinx-theme",
+]
+test = [
+    'numpy',
+    "pytest",
+    "pytest-subtests",
+]
+
+[tool.setuptools.packages.find]
+exclude = [
+    "docs*",
+    "test*"
+]
+
+[tool.setuptools.package-data]
+FarmCast = [
+    "examples/**",              # FarmCast examples
+]
