@@ -125,6 +125,82 @@ properties:
                 type: integer
                 default: 21
                 description: Number of high-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
+            NumTurbines:
+                type: integer
+                default: 1
+                description: Number of turbines in the farm (-) [>=1]
+            WT_X:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: X coordinates of the turbines in the farm (m) [1 to NumTurbines]
+            WT_Y:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: Y coordinates of the turbines in the farm (m) [1 to NumTurbines]
+            WT_Z:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: Z coordinates of the turbines in the farm (m) [1 to NumTurbines]
+            WT_FASTInFile:
+                type: array
+                items:
+                    type: string
+                default: ["../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT.fst"]
+                description: Name of file containing FAST input parameters (quoted string) [1 to NumTurbines]
+            X0_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: X coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
+            Y0_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: Y coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
+            Z0_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                default: [0.0]
+                description: Z coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
+            dX_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                    minimum: 0.0
+                default: [0.0]
+                description: Spacing of the high-resolution spatial nodes in X direction (m) [1 to NumTurbines]
+            dY_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                    minimum: 0.0
+                default: [0.0]
+                description: Spacing of the high-resolution spatial nodes in Y direction (m) [1 to NumTurbines]
+            dZ_High:
+                type: array
+                items:
+                    type: number
+                    units: m
+                    minimum: 0.0
+                default: [0.0]
+                description: Spacing of the high-resolution spatial nodes in Z direction (m) [1 to NumTurbines]
             InflowFile:
                 type: string
                 default: "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_InflowFile.dat"
