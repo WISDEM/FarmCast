@@ -1,5 +1,6 @@
 from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
+from farmcast.curtailment import set_rosco_curtailment
 import os
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
@@ -27,3 +28,7 @@ generate_fsft(fst_vt, output_path_fsft)
 output_path_tsin = os.path.join(base_dir, "inflow", "inflow_T1.in")
 fst_vt["TurbSim"] = {}
 write_turbsim_in(fst_vt, output_path_tsin)
+
+# Curtail power in rosco
+path2discon = os.path join(base_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
+set_rosco_curtailment(path2discon, pc_rating)
