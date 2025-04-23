@@ -30,5 +30,6 @@ fst_vt["TurbSim"] = {}
 write_turbsim_in(fst_vt, output_path_tsin)
 
 # Curtail power in rosco
-path2discon = os.path join(base_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
-set_rosco_curtailment(path2discon, pc_rating)
+path2discon = os.path.join(base_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
+pc_curtailment = 80.0
+set_rosco_curtailment(path2discon, pc_curtailment)
