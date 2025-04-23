@@ -34,17 +34,6 @@ False                ChkWndFiles          Check all the ambient wind files for d
 17                   NX_High              Number of high-resolution spatial nodes in X direction for wind data interpolation (-) [>=2]
 17                   NY_High              Number of high-resolution spatial nodes in Y direction for wind data interpolation (-) [>=2]
 21                   NZ_High              Number of high-resolution spatial nodes in Z direction for wind data interpolation (-) [>=2]
-1                    NumTurbines          Number of turbines in the farm (-) [>=1]
--780, 0, 780         WT_X                 X coordinates of the turbines in the farm (m) [1 to NumTurbines]
-0, 0, 0              WT_Y                 Y coordinates of the turbines in the farm (m) [1 to NumTurbines]
-0, 0, 0              WT_Z                 Z coordinates of the turbines in the farm (m) [1 to NumTurbines]
-../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T1.fst, ../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T2.fst, ../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_T3.fst WT_FASTInFile        Name of file containing FAST input parameters (quoted string) [1 to NumTurbines]
--820, -40, 740       X0_High              X coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
--80, -80, -80        Y0_High              Y coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
-5, 5, 5              Z0_High              Z coordinates of the high-resolution spatial nodes (m) [1 to NumTurbines]
-5, 5, 5              dX_High              Spacing of the high-resolution spatial nodes in X direction (m) [1 to NumTurbines]
-10, 10, 10           dY_High              Spacing of the high-resolution spatial nodes in Y direction (m) [1 to NumTurbines]
-10, 10, 10           dZ_High              Spacing of the high-resolution spatial nodes in Z direction (m) [1 to NumTurbines]
 "../turbines/IEA-3.4-130-RWT/IEA-3.4-130-RWT_InflowFile.dat" InflowFile           Name of file containing InflowWind module input parameters (quoted string)
 --- WIND TURBINES ---
 3                  NumTurbines        - Number of wind turbines (-) [>=1]  [last 6 columns below used only for Mod_AmbWind=2 or 3]

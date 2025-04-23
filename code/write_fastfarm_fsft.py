@@ -37,7 +37,7 @@ def generate_fsft(fst_vt, output_path):
         fsft_file.write("--- SIMULATION CONTROL ---\n")
         
         for key in key_order:
-            if key in fsft_vt:
+            if key in fsft_vt and key not in ["NumTurbines", "WT_X", "WT_Y", "WT_Z", "WT_FASTInFile", "X0_High", "Y0_High", "Z0_High", "dX_High", "dY_High", "dZ_High"]:
                 value = fsft_vt[key]
                 if isinstance(value, list):
                     value = ', '.join(map(str, value))
@@ -75,6 +75,9 @@ def generate_fsft(fst_vt, output_path):
                     fsft_file.write("--- VISUALIZATION ---\n")
                 elif key == "WrDisDT":
                     fsft_file.write("--- OUTPUT ---\n")
+            
+            if key not in fsft_vt:
+                raise Exception(f"Key '{key}' is not a valid FASTFarm input parameter.")
         
         fsft_file.write('END of input file (the word "END" must appear in the first 3 columns of this last OutList line)\n')
         fsft_file.close()
