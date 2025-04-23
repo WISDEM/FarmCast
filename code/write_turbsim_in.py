@@ -1,6 +1,15 @@
 from ruamel.yaml import YAML
+import os
+
+run_dir = os.path.dirname(os.path.realpath(__file__))
+turbsim_schema_path = os.path.join(run_dir, "turbsim_schema.yaml")
 
 def write_turbsim_in(turbsim, output_path):
+
+    yaml = YAML(typ='safe')
+    with open(turbsim_schema_path, 'r') as schema_file:
+        turbsim_schema = yaml.load(schema_file)
+
     with open(output_path, 'w') as ts_file:
         ts_file.write("------- TurbSim Input File -------------------------------------------------\n")
         ts_file.write("Sample TurbSim input file\n")
