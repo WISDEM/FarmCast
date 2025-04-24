@@ -42,57 +42,52 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
     original_fst_file = os.path.join(output_path_openfast, f"{model}.fst")
     if not os.path.exists(original_fst_file):
         raise FileNotFoundError(f"Original .fst file '{original_fst_file}' does not exist.")
-
+    # Create modified copies of the ElastoDyn file for T1, T2, and T3
+    original_elastodyn_file = os.path.join(output_path_openfast, f"{model}_ElastoDyn.dat")
+    if not os.path.exists(original_elastodyn_file):
+        raise FileNotFoundError(f"Original .dat file '{original_elastodyn_file}' does not exist.")
+    # Create modified copies of the ServoDyn file for T1, T2, and T3
+    original_servodyn_file = os.path.join(output_path_openfast, f"{model}_ServoDyn.dat")
+    if not os.path.exists(original_servodyn_file):
+        raise FileNotFoundError(f"Original .dat file '{original_servodyn_file}' does not exist.")
+    # Create modified copies of the DISCON file for T1, T2, and T3
+    original_discon_file = os.path.join(output_path_openfast, f"{model}_DISCON.IN")
+    if not os.path.exists(original_discon_file):
+        raise FileNotFoundError(f"Original DISCON file '{original_discon_file}' does not exist.")
+    # Create the three OpenFAST files for T1, T2, and T3
     for turbine_id in ["T1", "T2", "T3"]:
+        # .fst
         modified_fst_file = os.path.join(output_path_openfast, f"{model}_{turbine_id}.fst")
-        with open(original_fst_file, 'r') as src, open(modified_fst_file, 'w') as dst:
+        with open(original_fst_file, 'r') as src, open(modified_fst_file, 'w') as fst:
             for line in src:
                 if "ElastoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ElastoDyn.dat", f"IEA-3.4-130-RWT_ElastoDyn_{turbine_id}.dat")
-                    if turbine_id == "T1":
-                        with open(os.path.join(output_path_openfast, f"IEA-3.4-130-RWT_ElastoDyn_{turbine_id}.dat"), 'r+') as elastodyn_file:
-                            content = elastodyn_file.readlines()
-                            for i, content_line in enumerate(content):
-                                if "NacYaw" in content_line:
-                                    content[i] = content_line.replace("0.0", str(yaw_T1))
-                            elastodyn_file.seek(0)
-                            elastodyn_file.writelines(content)
-                    elif turbine_id == "T2":
-                        with open(os.path.join(output_path_openfast, f"IEA-3.4-130-RWT_ElastoDyn_{turbine_id}.dat"), 'r+') as elastodyn_file:
-                            content = elastodyn_file.readlines()
-                            for i, content_line in enumerate(content):
-                                if "NacYaw" in content_line:
-                                    content[i] = content_line.replace("0.0", str(yaw_T2))
-                            elastodyn_file.seek(0)
-                            elastodyn_file.writelines(content)
                 if "ServoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ServoDyn.dat", f"IEA-3.4-130-RWT_ServoDyn_{turbine_id}.dat")
-                    servo_dyn_file = os.path.join(output_path_openfast, f"IEA-3.4-130-RWT_ServoDyn_{turbine_id}.dat")
-                    with open(servo_dyn_file, 'r+') as servo_file:
-                        content = servo_file.readlines()
-                        for i, content_line in enumerate(content):
-                            if "DLL_FileName" in content_line:
-                                content[i] = content_line.replace("../rosco/libdiscon.so", f"../rosco/libdiscon_{turbine_id}.so")
-                        servo_file.seek(0)
-                        servo_file.writelines(content)
-                dst.write(line)
-    
-        # Modify the IEA-3.4-130-RWT_DISCON.IN file for each turbine
-        discon_file = os.path.join(output_path_openfast, f"IEA-3.4-130-RWT_DISCON_{turbine_id}.IN")
-        if not os.path.exists(discon_file):
-            raise FileNotFoundError(f"DISCON file '{discon_file}' does not exist for turbine {turbine_id}.")
-        
-        with open(discon_file, 'r+') as discon:
-            content = discon.readlines()
-            for i, content_line in enumerate(content):
-                if "PRC_R_Speed" in content_line:
-                    parts = content_line.split()
-                    if len(parts) > 1:
-                        if turbine_id == "T1" or  turbine_id == "T2":
-                            parts[1] = str(curtailment / 100.)
-                        else:
-                            parts[1] = str(1.0)
-                        content[i] = " ".join(parts) + "\n"
-            discon.seek(0)
-            discon.writelines(content)
-    
+                
+                fst.write(line.replace(f"{model}.fst", f"{model}_{turbine_id}.fst"))
+            fst.close()
+        # ElastoDyn
+        modified_elastodyn_file = os.path.join(output_path_openfast, f"{model}_ElastoDyn_{turbine_id}.dat")
+        with open(original_elastodyn_file, 'r') as src, open(modified_elastodyn_file, 'w') as edst:
+            for line in src:
+                if "NacYaw" in line:
+                    line = line.replace("0.0                    NacYaw", f"{yaw_T1}                    NacYaw")
+                edst.write(line.replace(f"{model}_ElastoDyn.dat", f"{model}_ElastoDyn_{turbine_id}.dat"))
+            edst.close()
+        # ServoDyn
+        modified_servodyn_file = os.path.join(output_path_openfast, f"{model}_ServoDyn_{turbine_id}.dat")
+        with open(original_servodyn_file, 'r') as src, open(modified_servodyn_file, 'w') as sdst:
+            for line in src:
+                if "DLL_FileName" in line:
+                    line = line.replace("../rosco/libdiscon.so", f"../rosco/libdiscon_{turbine_id}.so")
+                sdst.write(line.replace(f"{model}_ServoDyn.dat", f"{model}_ServoDyn_{turbine_id}.dat"))
+            sdst.close()
+        # DISCON
+        modified_discon_file = os.path.join(output_path_openfast, f"{model}_DISCON_{turbine_id}.IN")
+        with open(original_discon_file, 'r') as src, open(modified_discon_file, 'w') as dsrc:
+            for line in src:
+                if "PRC_R_Speed" in line:
+                    line = line.replace("0.0", str(curtailment / 100.))
+                dsrc.write(line.replace(f"{model}_DISCON.IN", f"{model}_DISCON_{turbine_id}.IN"))
+            dsrc.close()
