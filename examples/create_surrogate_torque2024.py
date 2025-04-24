@@ -11,7 +11,8 @@ output_dir = os.path.join(os.path.dirname(base_dir), "FarmCast_runs")
 # Turbines in the farm
 n_turbines = 3
 model = "IEA-3.4-130-RWT"
-diameter = 130.0
+rotor_diameter = 130.0
+hub_height = 110.0
 # Array of wind speeds in m/s
 ws = [6., 8., 10., 12.]
  # Array of turbulence intensities
@@ -32,7 +33,8 @@ curtailment_T1T2 = np.arange(20., 100., 5.)
 generate_cases(
     n_turbines=n_turbines,
     model=model,
-    diameter=diameter,
+    rotor_diameter=rotor_diameter,
+    hub_height=hub_height,
     ws=ws,
     TI=TI,
     shear=shear,
