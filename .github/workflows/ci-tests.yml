@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build-conda:
     name: Conda Build-Test (Python ${{ matrix.python-version }})
-    runs-on: stable-runners
+    runs-on: ${{ matrix.os }}
 
     defaults:
       run:
