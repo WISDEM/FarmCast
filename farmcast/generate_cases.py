@@ -29,12 +29,13 @@ def generate_cases(n_turbines=3,
     # Create the matrix of cases
     cases = []
     counter = 0
+    fst_vt = {}
+    fst_vt["TurbSim"] = {}
     for ws_i in ws:
         for TI_i in TI:
             for shear_i in shear:
                 # Create an inflow directory for each inflow case
-                turbsim_filename = os.path.join(inflow_dir, "ws%u_TI%u_shear%u.in"%(ws_i, TI_i, shear_i))
-                fst_vt["TurbSim"] = {}
+                turbsim_filename = os.path.join(inflow_dir, "ws%.2f_TI%.2f_shear%.2f.in" % (ws_i, TI_i, shear_i))
                 fst_vt["TurbSim"]["URef"] = ws_i
                 fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
                 fst_vt["TurbSim"]["PLExp"] = shear_i

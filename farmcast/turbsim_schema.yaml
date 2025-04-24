@@ -82,7 +82,7 @@ properties:
                 description: Time step [seconds]
             AnalysisTime:
                 type: number
-                default: 10.
+                default: 900.
                 minimum: 0
                 maximum: 1.e+5
                 unit: s

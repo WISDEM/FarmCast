@@ -71,4 +71,4 @@ def create_openfast_input_file(fst_file, model, yaw_misalignment, curtailment):
     """
 
     # Define the OpenFAST input file content
-    fst_content = f"""
+    pass

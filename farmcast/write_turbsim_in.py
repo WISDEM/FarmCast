@@ -28,31 +28,31 @@ def write_turbsim_in(fst_vt, output_path):
         ts_file.write("--- SIMULATION CONTROL ---\n")
         
         for key in key_order:
-            for key, value in ts_vt.items():
-                if value is False:
-                    value = "False"
-                elif value is True:
-                    value = "True"
-                description = descriptions.get(key, "")
-                
-                if isinstance(value, list):
-                    value = ', '.join(map(str, value))
-                ts_file.write(f"{value:<20} {key:<20} - {description}\n")
-                if key == 'ScaleIEC':
-                    ts_file.write("\n")
-                    ts_file.write("--------Turbine/Model Specifications-----------------------\n")
-                elif key == 'HFlowAng':
-                    ts_file.write("\n")
-                    ts_file.write("--------Meteorological Boundary Conditions-------------------\n")
-                elif key == 'Z0':
-                    ts_file.write("\n")
-                    ts_file.write("--------Non-IEC Meteorological Boundary Conditions------------\n")
-                elif key == 'PC_VW':
-                    ts_file.write("\n")
-                    ts_file.write("--------Spatial Coherence Parameters----------------------------\n")
-                elif key == 'CohExp':
-                    ts_file.write("\n")
-                    ts_file.write("--------Coherent Turbulence Scaling Parameters-------------------\n")
+            value = ts_vt[key]
+            if value is False:
+                value = "False"
+            elif value is True:
+                value = "True"
+            description = descriptions.get(key, "")
+            
+            if isinstance(value, list):
+                value = ', '.join(map(str, value))
+            ts_file.write(f"{value:<20} {key:<20} - {description}\n")
+            if key == 'ScaleIEC':
+                ts_file.write("\n")
+                ts_file.write("--------Turbine/Model Specifications-----------------------\n")
+            elif key == 'HFlowAng':
+                ts_file.write("\n")
+                ts_file.write("--------Meteorological Boundary Conditions-------------------\n")
+            elif key == 'Z0':
+                ts_file.write("\n")
+                ts_file.write("--------Non-IEC Meteorological Boundary Conditions------------\n")
+            elif key == 'PC_VW':
+                ts_file.write("\n")
+                ts_file.write("--------Spatial Coherence Parameters----------------------------\n")
+            elif key == 'CohExp':
+                ts_file.write("\n")
+                ts_file.write("--------Coherent Turbulence Scaling Parameters-------------------\n")
 
     ts_file.close()
 
