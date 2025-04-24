@@ -116,5 +116,3 @@ def generate_cases(n_turbines=3,
                                             f.write(f"{key}: {value}\n")
 
                                     counter += 1
-
-    print("All %d cases generated successfully in the folder %s"%(counter, case_dir))

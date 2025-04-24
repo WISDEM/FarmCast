@@ -95,8 +95,6 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
             for line in src:
                 if "PRC_R_Speed" in line:
                     if turbine_id == "T1" or turbine_id == "T2":
-                        line = line.replace("0.0", str(curtailment / 100.))
-                    else:
-                        line = line.replace("0.0", "0.0")
+                        line = line.replace("1.00000", str(curtailment / 100.))
                 dsrc.write(line.replace(f"{model}_DISCON.IN", f"{model}_DISCON_{turbine_id}.IN"))
             dsrc.close()

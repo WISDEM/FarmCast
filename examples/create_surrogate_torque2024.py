@@ -51,3 +51,5 @@ generate_cases(
     output_dir=output_dir
 )
 
+print(f"All {n_cases} successfully generated in {output_dir}.")
+
