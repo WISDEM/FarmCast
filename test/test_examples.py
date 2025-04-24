@@ -5,7 +5,7 @@ import subprocess
 EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "../examples")
 
 @pytest.mark.parametrize("example_script", [
-    "generate_runs.py",
+    "create_surrogate_torque2024.py",
 ])
 def test_example_scripts(example_script):
     """
