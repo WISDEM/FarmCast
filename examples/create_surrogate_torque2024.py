@@ -22,14 +22,19 @@ shear = [0.2]
 # Array of turbine spacing in rotor diameters
 spacing = [4., 6.]
 # Array of wind directions in degrees
-wind_direction = np.arange(-8., 8., 4.)
+wind_direction = np.arange(-8., 8., 8.)
 # Array of yaw misalignments for the upstream turbine (T1) in degrees
-T1_yaw_misalignment = np.arange(-30., 30., 10.)
+T1_yaw_misalignment = np.arange(-30., 30., 15.)
 # Array of yaw misalignments for the middle turbine (T2) in degrees
-T2_yaw_misalignment = np.arange(-20., 20., 10.)
+T2_yaw_misalignment = np.arange(-20., 20., 20.)
 # Array of curtailment values for T1 and T2 in percentage
-curtailment_T1T2 = np.arange(20., 100., 5.)
+curtailment_T1T2 = np.arange(40., 100., 20.)
 
+# Estimate the total number of cases
+n_cases = len(ws) * len(TI) * len(shear) * len(spacing) * len(wind_direction) * len(T1_yaw_misalignment) * len(T2_yaw_misalignment) * len(curtailment_T1T2)
+print(f"Total number of cases: {n_cases}")
+
+# Generate the cases
 generate_cases(
     n_turbines=n_turbines,
     model=model,

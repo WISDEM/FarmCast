@@ -108,6 +108,13 @@ def generate_cases(n_turbines=3,
                                         if os.path.exists(src):
                                             os.system(f"cp {src} {dst}")
                                     
+                                    # Print the case information to a yaml file
+                                    case_info_filename = os.path.join(case_dir, "case_info.yaml")
+                                    with open(case_info_filename, "w") as f:
+                                        f.write("# Case information\n")
+                                        for key, value in case.items():
+                                            f.write(f"{key}: {value}\n")
+
                                     counter += 1
 
     print("All %d cases generated successfully in the folder %s"%(counter, case_dir))
