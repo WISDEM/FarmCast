@@ -31,6 +31,7 @@ def generate_cases(n_turbines=3,
     counter = 0
     fst_vt = {}
     fst_vt["TurbSim"] = {}
+    fst_vt["FASTFarm"] = {}
     for ws_i in ws:
         for TI_i in TI:
             for shear_i in shear:
@@ -77,15 +78,14 @@ def generate_cases(n_turbines=3,
                                         0,
                                         spacing_i * rotor_diameter * np.sin(np.radians(wd_i))
                                     ]
-                                    fst_vt = {}
                                     fst_vt["FASTFarm"]["WT_X"] = WT_X
                                     fst_vt["FASTFarm"]["WT_Y"] = WT_Y
                                     fst_vt["FASTFarm"]["WT_Z"] = [0, 0, 0]
                                     fst_vt["FASTFarm"]["WT_FASTInFile"] = ["../openfast/%s/%s_T1.fst"%(model,model),
                                                                 "../openfast/%s/%s_T2.fst"%(model,model),
                                                                 "../openfast/%s/%s_T3.fst"%(model,model)]
-                                    fst_vt["FASTFarm"]["X0_High"] = WT_X-60.
-                                    fst_vt["FASTFarm"]["Y0_High"] = WT_Y - 80.
+                                    fst_vt["FASTFarm"]["X0_High"] = [x - 60. for x in WT_X]
+                                    fst_vt["FASTFarm"]["Y0_High"] = [x - 80. for x in WT_Y]
                                     fst_vt["FASTFarm"]["Z0_High"] = [5, 5, 5]
                                     fst_vt["FASTFarm"]["dX_High"] = [5, 5, 5]
                                     fst_vt["FASTFarm"]["dY_High"] = [10, 10, 10]
@@ -100,11 +100,13 @@ def generate_cases(n_turbines=3,
                                     os.makedirs(output_path_openfast, exist_ok=True)
                                     generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast)
                                     
-                                    # Curtail power in rosco
-                                    path2discon = os.path.join(case_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
-                                    set_rosco_curtailment(path2discon, curtailment)
+                                    # # Curtail power in rosco
+                                    # path2discon = os.path.join(case_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
+                                    # set_rosco_curtailment(path2discon, curtailment)
                                     
                                     counter += 1
+
+                                    exit()
 
 
 
