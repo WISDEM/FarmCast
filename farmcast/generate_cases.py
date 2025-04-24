@@ -2,11 +2,10 @@ import numpy as np
 import os
 from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
-from farmcast.curtailment import set_rosco_curtailment
 from farmcast.generate_openfast import generate_openfast
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
-
+base_dir = os.path.dirname(run_dir)
 
 def generate_cases(n_turbines=3,
                    model="IEA-3.4-130-RWT",
@@ -100,16 +99,15 @@ def generate_cases(n_turbines=3,
                                     os.makedirs(output_path_openfast, exist_ok=True)
                                     generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast)
                                     
-                                    # # Curtail power in rosco
-                                    # path2discon = os.path.join(case_dir, "turbines", "IEA-3.4-130-RWT", "IEA-3.4-130-RWT_DISCON.IN")
-                                    # set_rosco_curtailment(path2discon, curtailment)
+                                    # Create n_turbines copies of the rosco .so file
+                                    rosco_dir = os.path.join(case_dir, "rosco")
+                                    os.makedirs(rosco_dir, exist_ok=True)
+                                    for i in range(1, n_turbines + 1):
+                                        src = os.path.join(base_dir, "turbines", "rosco", "libdiscon.so")
+                                        dst = os.path.join(rosco_dir, f"libdiscon_T{i}.so")
+                                        if os.path.exists(src):
+                                            os.system(f"cp {src} {dst}")
                                     
                                     counter += 1
-
-                                    exit()
-
-
-
-
 
     print("All %d cases generated successfully in the folder %s"%(counter, case_dir))

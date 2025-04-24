@@ -1,5 +1,8 @@
 import os
 
+run_dir = os.path.dirname(os.path.realpath(__file__))
+base_dir = os.path.dirname(run_dir)
+
 def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
 
     """
@@ -14,7 +17,7 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
     yaw_T2 : float
         The yaw misalignment for the second turbine in degrees.
     curtailment : float
-        The curtailment value for the turbines in percentage.
+        The curtailment value for the first and second turbines in percentage.
     output_path_openfast : str
         The path to the output directory for OpenFAST files.
 
@@ -23,8 +26,6 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
     None
     """
 
-    run_dir = os.path.dirname(os.path.realpath(__file__))
-    base_dir = os.path.dirname(run_dir)
     # Set source directory for OpenFAST input files
     source_dir = os.path.join(base_dir, "turbines", model)
     # Copy all files from source_dir to output_path_openfast
@@ -72,7 +73,12 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
         with open(original_elastodyn_file, 'r') as src, open(modified_elastodyn_file, 'w') as edst:
             for line in src:
                 if "NacYaw" in line:
-                    line = line.replace("0.0                    NacYaw", f"{yaw_T1}                    NacYaw")
+                    if turbine_id == "T1":
+                        line = line.replace("0.0                    NacYaw", f"{yaw_T1}                    NacYaw")
+                    elif turbine_id == "T2":
+                        line = line.replace("0.0                    NacYaw", f"{yaw_T2}                    NacYaw")
+                    else:
+                        line = line.replace("0.0                    NacYaw", "0.0                    NacYaw")
                 edst.write(line.replace(f"{model}_ElastoDyn.dat", f"{model}_ElastoDyn_{turbine_id}.dat"))
             edst.close()
         # ServoDyn
@@ -88,6 +94,9 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
         with open(original_discon_file, 'r') as src, open(modified_discon_file, 'w') as dsrc:
             for line in src:
                 if "PRC_R_Speed" in line:
-                    line = line.replace("0.0", str(curtailment / 100.))
+                    if turbine_id == "T1" or turbine_id == "T2":
+                        line = line.replace("0.0", str(curtailment / 100.))
+                    else:
+                        line = line.replace("0.0", "0.0")
                 dsrc.write(line.replace(f"{model}_DISCON.IN", f"{model}_DISCON_{turbine_id}.IN"))
             dsrc.close()
