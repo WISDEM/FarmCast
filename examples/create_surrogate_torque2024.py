@@ -53,7 +53,7 @@ generate_cases(
     curtailment_T1T2=curtailment_T1T2,
     output_dir=output_dir
 )
+# Create the slurm files for each case
+create_slurm_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)
 
 print(f"All {n_cases} successfully generated in {output_dir}.")
-
-create_slurm_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)

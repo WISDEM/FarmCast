@@ -143,7 +143,7 @@ def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 10
     """
 
     n_runs_per_node = processors_per_node // n_turbines
-    n_slumrm_files = min([1, n_cases // n_runs_per_node])
+    n_slumrm_files = max([1, n_cases // n_runs_per_node])
     
     # Create a directory for SLURM files
     slurm_dir = os.path.join(output_dir, "slurm_files")
@@ -168,7 +168,8 @@ def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 10
             f.write("\n")
             f.write("module purge\n")
             f.write("module load tmux intel-oneapi-mkl/2023.2.0-intel mamba\n")
-            f.write("cd $SLURM_SUBMIT_DIR\n")
+            f.write("\n")
+            
             for j in range(n_runs_per_node):
                 id_case = i*n_runs_per_node+j
                 f.write(f"fastfarm ../cases/case_{id_case}/fastfarm/generated.fstf\n")
