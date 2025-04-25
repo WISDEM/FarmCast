@@ -63,7 +63,7 @@ def generate_cases(n_turbines=3,
                                     }
                                     cases.append(case)
                                     # Create a directory for each case
-                                    case_dir = os.path.join(output_dir, f"case_{counter}")
+                                    case_dir = os.path.join(output_dir, "cases", f"case_{counter}")
                                     os.makedirs(case_dir, exist_ok=True)
 
                                     # Generate .fsft file
@@ -143,7 +143,7 @@ def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 10
     """
 
     n_runs_per_node = processors_per_node // n_turbines
-    n_slumrm_files = n_cases // n_runs_per_node
+    n_slumrm_files = min([1, n_cases // n_runs_per_node])
     
     # Create a directory for SLURM files
     slurm_dir = os.path.join(output_dir, "slurm_files")
@@ -154,11 +154,11 @@ def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 10
         slurm_filename = os.path.join(slurm_dir, f"slurm_job_{i}.sh")
         with open(slurm_filename, "w") as f:
             f.write("#!/bin/bash\n")
-            f.write("#SBATCH --account={alloc}\n")
+            f.write(f"#SBATCH --account={alloc}\n")
             f.write("#SBATCH --time=01:00:00\n")
             f.write("#SBATCH --nodes=1\n")
-            f.write("#SBATCH --job-name=FarmCast_{i}\n")
-            f.write("#SBATCH --mail-user {slurm_email}\n")
+            f.write(f"#SBATCH --job-name=FarmCast_{i}\n")
+            f.write(f"#SBATCH --mail-user {slurm_email}\n")
             f.write("#SBATCH --mail-type BEGIN,END,FAIL\n")
             f.write("######SBATCH --partition=debug\n")
             f.write("######SBATCH --qos=high\n")
@@ -171,6 +171,6 @@ def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 10
             f.write("cd $SLURM_SUBMIT_DIR\n")
             for j in range(n_runs_per_node):
                 id_case = i*n_runs_per_node+j
-                f.write("fastfarm ../case_{id_case}/fastfarm/generated.fstf\n")
+                f.write(f"fastfarm ../cases/case_{id_case}/fastfarm/generated.fstf\n")
             f.close()
     return None
