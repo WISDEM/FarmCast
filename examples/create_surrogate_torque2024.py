@@ -1,9 +1,12 @@
-from farmcast.generate_cases import generate_cases
+from farmcast.generate_cases import generate_cases, create_slurm_files
 import os
 import numpy as np
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 base_dir = os.path.dirname(run_dir)
+
+# Set the username for Kestrel
+hpc_email = 'pbortolo@nrel.gov'
 
 # Set the output directory for the generated files
 output_dir = os.path.join(os.path.dirname(base_dir), "FarmCast_runs")
@@ -53,3 +56,4 @@ generate_cases(
 
 print(f"All {n_cases} successfully generated in {output_dir}.")
 
+create_slurm_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)
