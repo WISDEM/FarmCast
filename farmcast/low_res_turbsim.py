@@ -1,6 +1,6 @@
 import numpy as np
 
-def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction, transient = 120, analysis_time = 600):
+def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction, Cmeander = 1.9, transient = 120, analysis_time = 600):
 
     """
     Configure low-resolution TurbSim parameters for wind turbine simulations.
@@ -17,6 +17,8 @@ def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction,
         A list or array of spacing factors (dimensionless) between turbines.
     wind_direction : array-like
         A list or array of wind directions (in degrees).
+    Cmeander : float, optional
+        The wake meandering constant. Default is 1.9.
     transient : float, optional
         The transient time to be added to the analysis time (in seconds). Default is 300 seconds.
 
@@ -27,7 +29,7 @@ def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction,
         - GridHeight_LR (float): The height of the low-resolution grid (in meters).
         - GridWidth_LR (float): The width of the low-resolution grid (in meters).
         - AnalysisTime_LR (float): The analysis time for the simulation (in seconds).
-
+        - TimeStep_LR (float): The time step for the low-resolution simulation (in seconds).
     Notes:
     ------
     - The grid dimensions are calculated based on the rotor diameter and wind direction.
@@ -38,5 +40,7 @@ def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction,
     GridWidth_LR = 1.1 * rotor_diameter / np.cos(np.radians(np.max(abs(np.array(wind_direction)))))
     # Set the analysis time based on the lowest wind speed and highest spacing, plus transient
     AnalysisTime_LR = (n_turbines - 1) * np.max(spacing) * rotor_diameter / np.min(ws) + transient + analysis_time
+    # Set the time step based on the lowest wind speed and rotor diameter. It cannot be larger than 1 s
+    TimeStep_LR = np.round(np.min([1., Cmeander * rotor_diameter / (np.min(ws) * 10.0)]), 1)
 
-    return GridHeight_LR , GridWidth_LR, AnalysisTime_LR
+    return GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR

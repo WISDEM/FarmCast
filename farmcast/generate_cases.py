@@ -40,7 +40,7 @@ def generate_cases(n_turbines=3,
     fst_vt["FASTFarm"] = {}
 
     # Set the parameters for the low resolution TurbSim grid
-    GridHeight_LR , GridWidth_LR, AnalysisTime_LR = set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction)
+    GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR = set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction)
 
     turbsim_lr = []
     turbsim_hr = []
@@ -60,6 +60,7 @@ def generate_cases(n_turbines=3,
                     fst_vt["TurbSim"]["HubHt"] = hub_height
                     fst_vt["TurbSim"]["GridHeight"] = GridHeight_LR 
                     fst_vt["TurbSim"]["GridWidth"] = GridWidth_LR
+                    fst_vt["TurbSim"]["TimeStep"] = TimeStep_LR
                     fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                     turbsim_lr.append(ts_lr_filename)
                     write_turbsim_in(fst_vt, ts_lr_filename)
@@ -77,7 +78,7 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["HubHt"] = hub_height
                                 fst_vt["TurbSim"]["GridHeight"] = 1.1 * rotor_diameter 
                                 fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
-                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
+                                fst_vt["TurbSim"]["AnalysisTime"] = np.round(np.min([0.05, TimeStep_LR / 10]),2)
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
                                 fst_vt["TurbSim"]["UserFile"] = ts_hr_filename[:-3] + "T%u.txt" % T
                                 turbsim_hr.append(ts_hr_filename)
