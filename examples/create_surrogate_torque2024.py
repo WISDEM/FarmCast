@@ -62,7 +62,7 @@ turbsim_lr, turbsim_hr = generate_cases(
 slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_lr")
 create_slurm_ts_files(turbsim_lr, slurm_dir, slurm_email = hpc_email)
 slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_hr")
-create_slurm_ts_files(turbsim_hr, output_dir, slurm_email = hpc_email)
+create_slurm_ts_files(turbsim_hr, slurm_dir, slurm_email = hpc_email)
 
 # Create the slurm files for each case
 create_slurm_ff_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)

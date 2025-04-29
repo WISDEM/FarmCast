@@ -71,14 +71,14 @@ def generate_cases(n_turbines=3,
                         for wd_i in wind_direction:
                             # Get the turbine coordinates
                             WT_X = [
-                                -spacing_i * rotor_diameter * np.cos(np.radians(wd_i)),
                                 0,
-                                spacing_i * rotor_diameter * np.cos(np.radians(wd_i))
+                                spacing_i * rotor_diameter * np.cos(np.radians(wd_i)),
+                                2 * spacing_i * rotor_diameter * np.cos(np.radians(wd_i))
                             ]
                             WT_Y = [
-                                -spacing_i * rotor_diameter * np.sin(np.radians(wd_i)),
                                 0,
-                                spacing_i * rotor_diameter * np.sin(np.radians(wd_i))
+                                spacing_i * rotor_diameter * np.sin(np.radians(wd_i)),
+                                2 * spacing_i * rotor_diameter * np.sin(np.radians(wd_i))
                             ]
                             
                             # Now do turbsim high res for each turbine

@@ -109,7 +109,7 @@ properties:
                 type: number
                 default: 210
                 minimum: 0
-                maximum: 5.e+2
+                maximum: 5.e+3
                 unit: m
                 description: Grid width [m] (should be >= 2*(RotorRadius+ShaftLength))
             VFlowAng:
