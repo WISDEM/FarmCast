@@ -1,4 +1,5 @@
-from farmcast.generate_cases import generate_cases, create_slurm_files
+from farmcast.generate_cases import generate_cases
+from farmcast.generate_slurm_files import create_slurm_ff_files, create_slurm_ts_files
 import os
 import numpy as np
 
@@ -40,7 +41,7 @@ n_cases = len(ws) * n_seeds * len(TI) * len(shear) * len(spacing) * len(wind_dir
 print(f"Total number of cases: {n_cases}")
 
 # Generate the cases
-generate_cases(
+turbsim_lr, turbsim_hr = generate_cases(
     n_turbines=n_turbines,
     model=model,
     rotor_diameter=rotor_diameter,
@@ -56,7 +57,14 @@ generate_cases(
     curtailment_T1T2=curtailment_T1T2,
     output_dir=output_dir
 )
+
+# Create the slurm files for low res turbsim
+slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_lr")
+create_slurm_ts_files(turbsim_lr, slurm_dir, slurm_email = hpc_email)
+slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_hr")
+create_slurm_ts_files(turbsim_hr, output_dir, slurm_email = hpc_email)
+
 # Create the slurm files for each case
-create_slurm_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)
+create_slurm_ff_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)
 
 print(f"All {n_cases} successfully generated in {output_dir}.")

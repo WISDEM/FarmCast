@@ -42,6 +42,8 @@ def generate_cases(n_turbines=3,
     # Set the parameters for the low resolution TurbSim grid
     GridHeight_LR , GridWidth_LR, AnalysisTime_LR = set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction)
 
+    turbsim_lr = []
+    turbsim_hr = []
 
     for ws_i in ws:
         for seed in range(n_seeds):
@@ -49,7 +51,7 @@ def generate_cases(n_turbines=3,
                 for shear_i in shear:
                     # Create an inflow directory for each inflow case
                     # Start with low resolution
-                    turbsim_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f.in" % (ws_i, seed, TI_i, shear_i))
+                    ts_lr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f.in" % (ws_i, seed, TI_i, shear_i))
                     fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
                     fst_vt["TurbSim"]["URef"] = ws_i
                     fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
@@ -59,13 +61,14 @@ def generate_cases(n_turbines=3,
                     fst_vt["TurbSim"]["GridHeight"] = GridHeight_LR 
                     fst_vt["TurbSim"]["GridWidth"] = GridWidth_LR
                     fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
-                    write_turbsim_in(fst_vt, turbsim_filename)
+                    turbsim_lr.append(ts_lr_filename)
+                    write_turbsim_in(fst_vt, ts_lr_filename)
                     
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
                             # Now do turbsim high res
                             for T in range(1, n_turbines + 1):
-                                turbsim_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
+                                ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
                                 fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
                                 fst_vt["TurbSim"]["URef"] = ws_i
                                 fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
@@ -76,8 +79,9 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
                                 fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
-                                fst_vt["TurbSim"]["UserFile"] = turbsim_filename[:-3] + "T%u.txt" % T
-                                write_turbsim_in(fst_vt, turbsim_filename)
+                                fst_vt["TurbSim"]["UserFile"] = ts_hr_filename[:-3] + "T%u.txt" % T
+                                turbsim_hr.append(ts_hr_filename)
+                                write_turbsim_in(fst_vt, ts_hr_filename)
 
 
                             for yaw_T1 in T1_yaw_misalignment:
@@ -151,61 +155,4 @@ def generate_cases(n_turbines=3,
 
                                         counter += 1
 
-    return None
-
-def create_slurm_files(n_cases, n_turbines, output_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse"):
-    """
-    Create SLURM job submission files for each case.
-
-    Parameters
-    ----------
-    n_cases : int
-        The total number of cases.
-    n_turbines : int
-        The number of turbines in the farm.
-    output_dir : str
-        The directory where the SLURM files will be created.
-    processors_per_node : int, optional
-        The number of processors per node. Default is 104 (DOE's HPC Kestrel).
-    slurm_email : str, optional
-        The email address for SLURM notifications. Default is "username".
-    alloc : str, optional
-        The SLURM allocation name. Default is "windse".
-    Returns
-    -------
-    None
-    """
-
-    n_runs_per_node = processors_per_node // n_turbines
-    n_slumrm_files = max([1, n_cases // n_runs_per_node])
-    
-    # Create a directory for SLURM files
-    slurm_dir = os.path.join(output_dir, "slurm_files")
-    os.makedirs(slurm_dir, exist_ok=True)
-
-    # Create SLURM files for each case
-    for i in range(n_slumrm_files):
-        slurm_filename = os.path.join(slurm_dir, f"slurm_job_{i}.sh")
-        with open(slurm_filename, "w") as f:
-            f.write("#!/bin/bash\n")
-            f.write(f"#SBATCH --account={alloc}\n")
-            f.write("#SBATCH --time=01:00:00\n")
-            f.write("#SBATCH --nodes=1\n")
-            f.write(f"#SBATCH --job-name=FarmCast_{i}\n")
-            f.write(f"#SBATCH --mail-user {slurm_email}\n")
-            f.write("#SBATCH --mail-type BEGIN,END,FAIL\n")
-            f.write("######SBATCH --partition=debug\n")
-            f.write("######SBATCH --qos=high\n")
-            f.write("######SBATCH --mem=1000GB      # RAM in MB\n")
-            f.write("#SBATCH --output=job_log.%j.out  # %j will be replaced with the job ID\n")
-
-            f.write("\n")
-            f.write("module purge\n")
-            f.write("module load tmux intel-oneapi-mkl/2023.2.0-intel mamba\n")
-            f.write("\n")
-            
-            for j in range(n_runs_per_node):
-                id_case = i*n_runs_per_node+j
-                f.write(f"fastfarm ../cases/case_{id_case}/fastfarm/generated.fstf\n")
-            f.close()
-    return None
+    return turbsim_lr, turbsim_hr
