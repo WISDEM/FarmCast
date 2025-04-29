@@ -49,7 +49,7 @@ def generate_cases(n_turbines=3,
                 for shear_i in shear:
                     # Create an inflow directory for each inflow case
                     # Start with low resolution
-                    turbsim_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_LR.in" % (ws_i, seed, TI_i, shear_i))
+                    turbsim_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f.in" % (ws_i, seed, TI_i, shear_i))
                     fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
                     fst_vt["TurbSim"]["URef"] = ws_i
                     fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
@@ -63,11 +63,29 @@ def generate_cases(n_turbines=3,
                     
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
+                            # Now do turbsim high res
+                            for T in range(1, n_turbines + 1):
+                                turbsim_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
+                                fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
+                                fst_vt["TurbSim"]["URef"] = ws_i
+                                fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
+                                fst_vt["TurbSim"]["PLExp"] = shear_i
+                                fst_vt["TurbSim"]["RefHt"] = hub_height
+                                fst_vt["TurbSim"]["HubHt"] = hub_height
+                                fst_vt["TurbSim"]["GridHeight"] = 1.1 * rotor_diameter 
+                                fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
+                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
+                                fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
+                                fst_vt["TurbSim"]["UserFile"] = turbsim_filename[:-3] + "T%u.txt" % T
+                                write_turbsim_in(fst_vt, turbsim_filename)
+
+
                             for yaw_T1 in T1_yaw_misalignment:
                                 for yaw_T2 in T2_yaw_misalignment:
                                     for curtailment in curtailment_T1T2:
                                         case = {
                                             "wind_speed": ws_i,
+                                            "seed": seed,
                                             "turbulence_intensity": TI_i,
                                             "shear": shear_i,
                                             "spacing": spacing_i,
