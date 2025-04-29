@@ -1,6 +1,5 @@
 import numpy as np
 import struct
-import os
 
 def read_turbsim_bts(filename):
     """ read BTS file, with field: 

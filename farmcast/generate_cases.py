@@ -4,6 +4,8 @@ from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
 from farmcast.low_res_turbsim import set_low_res_turbsim
+from farmcast.generate_turbsim_timesr import generateTimeSeriesFile
+
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 base_dir = os.path.dirname(run_dir)
@@ -67,6 +69,18 @@ def generate_cases(n_turbines=3,
                     
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
+                            # Get the turbine coordinates
+                            WT_X = [
+                                -spacing_i * rotor_diameter * np.cos(np.radians(wd_i)),
+                                0,
+                                spacing_i * rotor_diameter * np.cos(np.radians(wd_i))
+                            ]
+                            WT_Y = [
+                                -spacing_i * rotor_diameter * np.sin(np.radians(wd_i)),
+                                0,
+                                spacing_i * rotor_diameter * np.sin(np.radians(wd_i))
+                            ]
+                            
                             # Now do turbsim high res for each turbine
                             for T in range(1, n_turbines + 1):
                                 ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
@@ -83,6 +97,11 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["UserFile"] = ts_hr_filename[:-3] + "T%u.txt" % T
                                 turbsim_hr.append(ts_hr_filename)
                                 write_turbsim_in(fst_vt, ts_hr_filename)
+
+                                # If .bts files exist, generate the time series file
+                                if os.path.exists(ts_lr_filename[:-3] + ".bts"):
+                                    # Generate the time series file
+                                    generateTimeSeriesFile(ts_lr_filename, WT_X[T-1], WT_Y[T-1], hub_height, T)
 
 
                             for yaw_T1 in T1_yaw_misalignment:
@@ -106,16 +125,6 @@ def generate_cases(n_turbines=3,
                                         os.makedirs(case_dir, exist_ok=True)
 
                                         # Generate .fsft file
-                                        WT_X = [
-                                            -spacing_i * rotor_diameter * np.cos(np.radians(wd_i)),
-                                            0,
-                                            spacing_i * rotor_diameter * np.cos(np.radians(wd_i))
-                                        ]
-                                        WT_Y = [
-                                            -spacing_i * rotor_diameter * np.sin(np.radians(wd_i)),
-                                            0,
-                                            spacing_i * rotor_diameter * np.sin(np.radians(wd_i))
-                                        ]
                                         fst_vt["FASTFarm"]["WT_X"] = WT_X
                                         fst_vt["FASTFarm"]["WT_Y"] = WT_Y
                                         fst_vt["FASTFarm"]["WT_Z"] = [0, 0, 0]
