@@ -17,7 +17,7 @@ model = "IEA-3.4-130-RWT"
 rotor_diameter = 130.0
 hub_height = 110.0
 # Array of wind speeds in m/s
-ws = [6., 8., 10., 12.]
+ws = [6., 8.]
  # Array of turbulence intensities
 TI = [0.06, 0.12]
 # Array of shear coefficients
@@ -27,11 +27,11 @@ spacing = [4., 6.]
 # Array of wind directions in degrees
 wind_direction = np.arange(-8., 8., 8.)
 # Array of yaw misalignments for the upstream turbine (T1) in degrees
-T1_yaw_misalignment = np.arange(-30., 30., 15.)
+T1_yaw_misalignment = np.arange(-30., 30., 30.)
 # Array of yaw misalignments for the middle turbine (T2) in degrees
 T2_yaw_misalignment = np.arange(-20., 20., 20.)
 # Array of curtailment values for T1 and T2 in percentage
-curtailment_T1T2 = np.arange(40., 100., 20.)
+curtailment_T1T2 = np.arange(40., 100., 30.)
 
 # Estimate the total number of cases
 n_cases = len(ws) * len(TI) * len(shear) * len(spacing) * len(wind_direction) * len(T1_yaw_misalignment) * len(T2_yaw_misalignment) * len(curtailment_T1T2)

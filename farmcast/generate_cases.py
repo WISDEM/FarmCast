@@ -3,6 +3,7 @@ import os
 from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
+from farmcast.low_res_turbsim import set_low_res_turbsim
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 base_dir = os.path.dirname(run_dir)
@@ -31,18 +32,25 @@ def generate_cases(n_turbines=3,
     fst_vt = {}
     fst_vt["TurbSim"] = {}
     fst_vt["FASTFarm"] = {}
+
+    # Set the parameters for the low resolution TurbSim grid
+    GridHeight_LR , GridWidth_LR, AnalysisTime_LR = set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction)
+
+
     for ws_i in ws:
         for TI_i in TI:
             for shear_i in shear:
                 # Create an inflow directory for each inflow case
-                turbsim_filename = os.path.join(inflow_dir, "ws%.2f_TI%.2f_shear%.2f.in" % (ws_i, TI_i, shear_i))
+                # Start with low resolution
+                turbsim_filename = os.path.join(inflow_dir, "ws%.2f_TI%.2f_shear%.2f_LR.in" % (ws_i, TI_i, shear_i))
                 fst_vt["TurbSim"]["URef"] = ws_i
                 fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
                 fst_vt["TurbSim"]["PLExp"] = shear_i
                 fst_vt["TurbSim"]["RefHt"] = hub_height
                 fst_vt["TurbSim"]["HubHt"] = hub_height
-                fst_vt["TurbSim"]["GridHeight"] = 1.1*rotor_diameter
-                fst_vt["TurbSim"]["GridWidth"] = 1.1*rotor_diameter
+                fst_vt["TurbSim"]["GridHeight"] = GridHeight_LR 
+                fst_vt["TurbSim"]["GridWidth"] = GridWidth_LR
+                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                 write_turbsim_in(fst_vt, turbsim_filename)
                 
                 for spacing_i in spacing:
