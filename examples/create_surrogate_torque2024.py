@@ -18,6 +18,8 @@ rotor_diameter = 130.0
 hub_height = 110.0
 # Array of wind speeds in m/s
 ws = [6., 8.]
+# Number of seeds
+n_seeds = 2
  # Array of turbulence intensities
 TI = [0.06, 0.12]
 # Array of shear coefficients
@@ -34,7 +36,7 @@ T2_yaw_misalignment = np.arange(-20., 20., 20.)
 curtailment_T1T2 = np.arange(40., 100., 30.)
 
 # Estimate the total number of cases
-n_cases = len(ws) * len(TI) * len(shear) * len(spacing) * len(wind_direction) * len(T1_yaw_misalignment) * len(T2_yaw_misalignment) * len(curtailment_T1T2)
+n_cases = len(ws) * n_seeds * len(TI) * len(shear) * len(spacing) * len(wind_direction) * len(T1_yaw_misalignment) * len(T2_yaw_misalignment) * len(curtailment_T1T2)
 print(f"Total number of cases: {n_cases}")
 
 # Generate the cases
@@ -44,6 +46,7 @@ generate_cases(
     rotor_diameter=rotor_diameter,
     hub_height=hub_height,
     ws=ws,
+    n_seeds = n_seeds,
     TI=TI,
     shear=shear,
     spacing=spacing,
