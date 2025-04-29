@@ -92,16 +92,19 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["HubHt"] = hub_height
                                 fst_vt["TurbSim"]["GridHeight"] = 1.1 * rotor_diameter 
                                 fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
-                                fst_vt["TurbSim"]["AnalysisTime"] = np.round(np.min([0.05, TimeStep_LR / 10]),2)
+                                fst_vt["TurbSim"]["DT"] = np.round(np.min([0.05, TimeStep_LR / 10]),2)
+                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
-                                fst_vt["TurbSim"]["UserFile"] = ts_hr_filename[:-3] + "T%u.txt" % T
+                                UserFile = "\"" + ts_hr_filename[:-3] + ".txt" + "\""
+                                fst_vt["TurbSim"]["UserFile"] = UserFile
                                 turbsim_hr.append(ts_hr_filename)
                                 write_turbsim_in(fst_vt, ts_hr_filename)
 
                                 # If .bts files exist, generate the time series file
-                                if os.path.exists(ts_lr_filename[:-3] + ".bts"):
+                                ts_lr_bts = ts_lr_filename[:-3] + ".bts"
+                                if os.path.exists(ts_lr_bts):
                                     # Generate the time series file
-                                    generateTimeSeriesFile(ts_lr_filename, WT_X[T-1], WT_Y[T-1], hub_height, T)
+                                    generateTimeSeriesFile(ts_lr_bts, WT_X[T-1], WT_Y[T-1], hub_height, T)
 
 
                             for yaw_T1 in T1_yaw_misalignment:

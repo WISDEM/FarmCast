@@ -112,7 +112,7 @@ def generateTimeSeriesFile(filename, x, y, z, T):
     vvel = np.roll(bts_data['u'][1, :, iy, iz], start_time_step)
     wvel = np.roll(bts_data['u'][2, :, iy, iz], start_time_step)
 
-    timeSeriesOutputFile = filename[:-3] + f'USRTimeSeries_T{T}.txt'
+    timeSeriesOutputFile = filename[:-4] + f'_T{T}.txt'
 
     writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel, vvel, wvel, time)
 
