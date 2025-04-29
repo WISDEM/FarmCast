@@ -105,7 +105,7 @@ def generateTimeSeriesFile(filename, x, y, z, T):
 
     yloc = bts_data['y'][iy] - y
     zloc = bts_data['z'][iz] - z
-    time = bts_data['time']
+    time = bts_data['t']
     # Get time-series given rolling
     Vxyz = bts_data['u'][0,:,iy,iz]
     start_time_step = round( (x/Vxyz.mean())/bts_data['dt'] )
@@ -116,3 +116,4 @@ def generateTimeSeriesFile(filename, x, y, z, T):
     timeSeriesOutputFile = filename[:-3] + f'USRTimeSeries_T{T}.txt'
 
     writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel, vvel, wvel, time)
+
