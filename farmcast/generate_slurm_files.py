@@ -58,6 +58,25 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
     return None
 
 def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse"):
+    """
+    Create SLURM job submission files for each turbsim case.
+
+    Parameters
+    ----------
+    turbsim_files : array
+        Array of TurbSim input files.
+    slurm_dir : str
+        The directory where the SLURM files will be created.
+    processors_per_node : int, optional
+        The number of processors per node. Default is 104 (DOE's HPC Kestrel).
+    slurm_email : str, optional
+        The email address for SLURM notifications. Default is "username".
+    alloc : str, optional
+        The SLURM allocation name. Default is "windse".
+    Returns
+    -------
+    None
+    """
 
     n_cases = len(turbsim_files)
     n_slumrm_files = max([1, n_cases // processors_per_node])

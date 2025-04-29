@@ -66,7 +66,7 @@ def generate_cases(n_turbines=3,
                     
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
-                            # Now do turbsim high res
+                            # Now do turbsim high res for each turbine
                             for T in range(1, n_turbines + 1):
                                 ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
                                 fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
