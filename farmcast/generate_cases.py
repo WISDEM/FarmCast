@@ -5,7 +5,7 @@ from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
 from farmcast.low_res_turbsim import set_low_res_turbsim
 from farmcast.generate_turbsim_timesr import generateTimeSeriesFile
-
+from farmcast.utils import getMultipleOf
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
 base_dir = os.path.dirname(run_dir)
@@ -66,7 +66,7 @@ def generate_cases(n_turbines=3,
                     fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                     turbsim_lr.append(ts_lr_filename)
                     write_turbsim_in(fst_vt, ts_lr_filename)
-                    
+
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
                             # Get the turbine coordinates
@@ -92,7 +92,8 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["HubHt"] = hub_height
                                 fst_vt["TurbSim"]["GridHeight"] = 1.1 * rotor_diameter 
                                 fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
-                                fst_vt["TurbSim"]["DT"] = np.round(np.min([0.05, TimeStep_LR / 10]),2)
+                                TimeStep_HR = np.round(np.min([0.05, TimeStep_LR / 10]),2)
+                                fst_vt["TurbSim"]["DT"] = TimeStep_HR
                                 fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
                                 UserFile = "\"" + ts_hr_filename[:-3] + ".txt" + "\""
@@ -105,6 +106,62 @@ def generate_cases(n_turbines=3,
                                 if os.path.exists(ts_lr_bts):
                                     # Generate the time series file
                                     generateTimeSeriesFile(ts_lr_bts, WT_X[T-1], WT_Y[T-1], hub_height, T)
+
+                            # Set ambient wind parameters
+                            # Low res first
+                            dT_Low = getMultipleOf(TimeStep_LR, multipleof=TimeStep_HR)
+                            dX_Low = getMultipleOf(ws_i*dT_Low, multipleof=ws_i*TimeStep_HR)
+                            NY_Low = fst_vt["TurbSim"]["NumGrid_Y"]
+                            NZ_Low = fst_vt["TurbSim"]["NumGrid_Z"]
+                            
+                            dY_Low = GridWidth_LR / (NY_Low - 1)
+                            dZ_Low = GridHeight_LR / (NZ_Low - 1)
+                        
+                            X0_Low = getMultipleOf(np.min(WT_X), multipleof=dX_Low)
+                            Y0_Low = - GridWidth_LR * 0.5
+                            Z0_Low = fst_vt["TurbSim"]["RefHt"] - GridHeight_LR * 0.5
+                        
+                            XMax_Low = getMultipleOf(np.max(WT_X), multipleof=dX_Low)
+                            LX_Low = XMax_Low-X0_Low
+                        
+                            NX_Low = int(np.ceil(LX_Low/dX_Low)+1)
+                            
+                        
+                            # assert NY_Low == int(np.ceil(LY_Low/dY_Low)+1)
+                            # assert NZ_Low == int(np.ceil(LZ_Low/dZ_Low)+1)
+                            # assert (NY_Low-1)*dY_Low == LY_Low
+                            # assert (NZ_Low-1)*dZ_Low == LZ_Low
+                    
+
+
+                            # Now high res
+
+                            LX_High = 1.1 * rotor_diameter
+                            LY_High = 1.1 * rotor_diameter 
+                            LZ_High = 1.1 * rotor_diameter 
+                        
+                            dX_High_f = ws_i * TimeStep_HR
+                            dX_High_f = round(5./dX_High_f) * dX_High_f
+                            dX_High = [dX_High_f, dX_High_f, dX_High_f]
+                            
+                            NX_High = int(np.ceil(LX_High/dX_High_f) + 1)  # plus 1 from the guidance
+                            NY_High = fst_vt["TurbSim"]["NumGrid_Y"]
+                            NZ_High = fst_vt["TurbSim"]["NumGrid_Z"]
+
+                            dY_High_f = LY_High / (NY_High - 1)
+                            dZ_High_f = LZ_High / (NZ_High - 1)
+                            dY_High = [dY_High_f, dY_High_f, dY_High_f]
+                            dZ_High = [dZ_High_f, dZ_High_f, dZ_High_f]
+                        
+                            # assert NY_High == int(np.ceil(LY_High/dY_High)+1)
+                            # assert NZ_High == int(np.ceil(LZ_High/dZ_High)+1)
+                            # assert (NY_High-1)*dY_High == LY_High
+                            # assert (NZ_High-1)*dZ_High == LZ_High
+                        
+                            # --- High-res location per turbine
+                            X0_High = WT_X
+                            Y0_High = WT_Y
+                            Z0_High = [0., 0., 0.]
 
 
                             for yaw_T1 in T1_yaw_misalignment:
@@ -128,18 +185,33 @@ def generate_cases(n_turbines=3,
                                         os.makedirs(case_dir, exist_ok=True)
 
                                         # Generate .fsft file
+                                        NX_Low = int(np.ceil(LX_Low/dX_Low)+1)
+                                        fst_vt["FASTFarm"]["DT_Low"] = TimeStep_LR
+                                        fst_vt["FASTFarm"]["DT_High"] = TimeStep_HR
+                                        fst_vt["FASTFarm"]["NX_Low"] = NX_Low
+                                        fst_vt["FASTFarm"]["NY_Low"] = NY_Low
+                                        fst_vt["FASTFarm"]["NZ_Low"] = NZ_Low
+                                        fst_vt["FASTFarm"]["X0_Low"] = X0_Low
+                                        fst_vt["FASTFarm"]["Y0_Low"] = Y0_Low
+                                        fst_vt["FASTFarm"]["Z0_Low"] = Z0_Low
+                                        fst_vt["FASTFarm"]["dX_Low"] = dX_Low
+                                        fst_vt["FASTFarm"]["dY_Low"] = dY_Low
+                                        fst_vt["FASTFarm"]["dZ_Low"] = dZ_Low
+                                        fst_vt["FASTFarm"]["NX_High"] = NX_High
+                                        fst_vt["FASTFarm"]["NY_High"] = NY_High
+                                        fst_vt["FASTFarm"]["NZ_High"] = NZ_High
                                         fst_vt["FASTFarm"]["WT_X"] = WT_X
                                         fst_vt["FASTFarm"]["WT_Y"] = WT_Y
                                         fst_vt["FASTFarm"]["WT_Z"] = [0, 0, 0]
                                         fst_vt["FASTFarm"]["WT_FASTInFile"] = ["../openfast/%s/%s_T1.fst"%(model,model),
                                                                     "../openfast/%s/%s_T2.fst"%(model,model),
                                                                     "../openfast/%s/%s_T3.fst"%(model,model)]
-                                        fst_vt["FASTFarm"]["X0_High"] = [x - 60. for x in WT_X]
-                                        fst_vt["FASTFarm"]["Y0_High"] = [x - 80. for x in WT_Y]
-                                        fst_vt["FASTFarm"]["Z0_High"] = [5, 5, 5]
-                                        fst_vt["FASTFarm"]["dX_High"] = [5, 5, 5]
-                                        fst_vt["FASTFarm"]["dY_High"] = [10, 10, 10]
-                                        fst_vt["FASTFarm"]["dZ_High"] = [10, 10, 10]
+                                        fst_vt["FASTFarm"]["X0_High"] = X0_High
+                                        fst_vt["FASTFarm"]["Y0_High"] = Y0_High
+                                        fst_vt["FASTFarm"]["Z0_High"] = Z0_High
+                                        fst_vt["FASTFarm"]["dX_High"] = dX_High
+                                        fst_vt["FASTFarm"]["dY_High"] = dY_High
+                                        fst_vt["FASTFarm"]["dZ_High"] = dZ_High
                                         
                                         os.makedirs(os.path.join(case_dir, "fastfarm"), exist_ok=True)
                                         output_path_fsft = os.path.join(case_dir, "fastfarm", "generated.fstf")
