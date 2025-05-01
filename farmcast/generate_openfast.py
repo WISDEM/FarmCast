@@ -74,8 +74,6 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, 
             for line in src:
                 if "ElastoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ElastoDyn.dat", f"IEA-3.4-130-RWT_ElastoDyn_{turbine_id}.dat")
-                if "InflowFile.dat" in line:
-                    line = line.replace("IEA-3.4-130-RWT_InflowFile.dat", f"IEA-3.4-130-RWT_InflowFile_{turbine_id}.dat")
                 if "ServoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ServoDyn.dat", f"IEA-3.4-130-RWT_ServoDyn_{turbine_id}.dat")
                 

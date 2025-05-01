@@ -121,7 +121,7 @@ def generate_cases(n_turbines=3,
                         
                             X0_Low = getMultipleOf(np.min(WT_X), multipleof=dX_Low)
                             Y0_Low = - GridWidth_LR * 0.5
-                            Z0_Low = fst_vt["TurbSim"]["RefHt"] - GridHeight_LR * 0.5
+                            Z0_Low = hub_height - GridHeight_LR * 0.5
                         
                             XMax_Low = getMultipleOf(np.max(WT_X), multipleof=dX_Low)
                             LX_Low = XMax_Low-X0_Low
@@ -162,8 +162,8 @@ def generate_cases(n_turbines=3,
                         
                             # --- High-res location per turbine
                             X0_High = WT_X
-                            Y0_High = WT_Y
-                            Z0_High = [0., 0., 0.]
+                            Y0_High = [y - 1.1 / 2. * rotor_diameter for y in WT_Y]
+                            Z0_High = [Z0_Low, Z0_Low, Z0_Low]
 
 
                             for yaw_T1 in T1_yaw_misalignment:
