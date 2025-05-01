@@ -222,7 +222,7 @@ def generate_cases(n_turbines=3,
                                         # Generate OpenFAST input files
                                         output_path_openfast = os.path.join(case_dir, "openfast")
                                         os.makedirs(output_path_openfast, exist_ok=True)
-                                        generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast)
+                                        generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, ts_lr_filename)
                                         
                                         # Create n_turbines copies of the rosco .so file
                                         rosco_dir = os.path.join(case_dir, "rosco")

@@ -3,7 +3,7 @@ import os
 run_dir = os.path.dirname(os.path.realpath(__file__))
 base_dir = os.path.dirname(run_dir)
 
-def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
+def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, ts_lr_filename):
 
     """
     Generate OpenFAST input files for the given turbine model and yaw misalignment.
@@ -20,7 +20,8 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
         The curtailment value for the first and second turbines in percentage.
     output_path_openfast : str
         The path to the output directory for OpenFAST files.
-
+    ts_lr_filename : str
+        The filename of the low-resolution TurbSim file.
     Returns
     -------
     None
@@ -47,6 +48,18 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
     original_elastodyn_file = os.path.join(output_path_openfast, f"{model}_ElastoDyn.dat")
     if not os.path.exists(original_elastodyn_file):
         raise FileNotFoundError(f"Original .dat file '{original_elastodyn_file}' does not exist.")
+    # Create modified copies of the InflowDyn file for ambient wind, T1, T2, and T3
+    original_inflow_file = os.path.join(output_path_openfast, f"{model}_InflowFile.dat")
+    if not os.path.exists(original_inflow_file):
+        raise FileNotFoundError(f"Original .dat file '{original_inflow_file}' does not exist.")
+    # InflowFile
+    modified_inflow_file = os.path.join(output_path_openfast, f"{model}_InflowFile_Ambient.dat")
+    with open(original_inflow_file, 'r') as src, open(modified_inflow_file, 'w') as ifst:
+        for line in src:
+            if "FileName_BTS" in line:
+                line = line.replace("\"none\"                 FileName_BTS", f"{ts_lr_filename[:-3] + ".bts"}                    FileName_BTS")
+            ifst.write(line.replace(original_inflow_file, modified_inflow_file))
+        ifst.close()
     # Create modified copies of the ServoDyn file for T1, T2, and T3
     original_servodyn_file = os.path.join(output_path_openfast, f"{model}_ServoDyn.dat")
     if not os.path.exists(original_servodyn_file):
@@ -63,6 +76,8 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
             for line in src:
                 if "ElastoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ElastoDyn.dat", f"IEA-3.4-130-RWT_ElastoDyn_{turbine_id}.dat")
+                if "InflowFile.dat" in line:
+                    line = line.replace("IEA-3.4-130-RWT_InflowFile.dat", f"IEA-3.4-130-RWT_InflowFile_{turbine_id}.dat")
                 if "ServoDyn.dat" in line:
                     line = line.replace("IEA-3.4-130-RWT_ServoDyn.dat", f"IEA-3.4-130-RWT_ServoDyn_{turbine_id}.dat")
                 
@@ -81,6 +96,20 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast):
                         line = line.replace("0.0                    NacYaw", "0.0                    NacYaw")
                 edst.write(line.replace(f"{model}_ElastoDyn.dat", f"{model}_ElastoDyn_{turbine_id}.dat"))
             edst.close()
+        # InflowFile
+        modified_inflow_file = os.path.join(output_path_openfast, f"{model}_InflowFile_{turbine_id}.dat")
+        with open(original_inflow_file, 'r') as src, open(modified_inflow_file, 'w') as ifst:
+            for line in src:
+                if "FileName_BTS" in line:
+                    ts_hr = ts_lr_filename[:-3] + f"_{turbine_id}.bts"
+                    if turbine_id == "T1":
+                        line = line.replace("\"none\"                 FileName_BTS", f"{ts_hr}                    FileName_BTS")
+                    elif turbine_id == "T2":
+                        line = line.replace("\"none\"                 FileName_BTS", f"{ts_hr}                    FileName_BTS")
+                    elif turbine_id == "T3":
+                        line = line.replace("\"none\"                 FileName_BTS", f"{ts_hr}                    FileName_BTS")
+                ifst.write(line.replace(f"{model}_InflowFile.dat", f"{model}_InflowFile_{turbine_id}.dat"))
+            ifst.close()
         # ServoDyn
         modified_servodyn_file = os.path.join(output_path_openfast, f"{model}_ServoDyn_{turbine_id}.dat")
         with open(original_servodyn_file, 'r') as src, open(modified_servodyn_file, 'w') as sdst:
