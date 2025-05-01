@@ -1,5 +1,5 @@
 import numpy as np
-import os
+import os, shutil
 from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
@@ -205,9 +205,11 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["WT_X"] = WT_X
                                         fst_vt["FASTFarm"]["WT_Y"] = WT_Y
                                         fst_vt["FASTFarm"]["WT_Z"] = [0, 0, 0]
-                                        fst_vt["FASTFarm"]["WT_FASTInFile"] = ["../openfast/%s/%s_T1.fst"%(model,model),
-                                                                    "../openfast/%s/%s_T2.fst"%(model,model),
-                                                                    "../openfast/%s/%s_T3.fst"%(model,model)]
+                                        output_path_openfast = os.path.join(case_dir, "openfast")
+                                        fst_vt["FASTFarm"]["InflowFile"] = os.path.join(output_path_openfast, model + "_InflowFile.dat")
+                                        fst_vt["FASTFarm"]["WT_FASTInFile"] = ["../openfast/%s_T1.fst"%(model),
+                                                                    "../openfast/%s_T2.fst"%(model),
+                                                                    "../openfast/%s_T3.fst"%(model)]
                                         fst_vt["FASTFarm"]["X0_High"] = X0_High
                                         fst_vt["FASTFarm"]["Y0_High"] = Y0_High
                                         fst_vt["FASTFarm"]["Z0_High"] = Z0_High
@@ -220,7 +222,6 @@ def generate_cases(n_turbines=3,
                                         generate_fsft(fst_vt, output_path_fsft)
 
                                         # Generate OpenFAST input files
-                                        output_path_openfast = os.path.join(case_dir, "openfast")
                                         os.makedirs(output_path_openfast, exist_ok=True)
                                         generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, ts_lr_filename)
                                         
@@ -233,6 +234,14 @@ def generate_cases(n_turbines=3,
                                             if os.path.exists(src):
                                                 os.system(f"cp {src} {dst}")
                                         
+                                        # Rename the .bts files to Low and High
+                                        case_inflow_dir = os.path.join(case_dir, "inflow")
+                                        os.makedirs(case_inflow_dir, exist_ok=True)
+                                        shutil.copy(ts_lr_filename[:-3] + ".bts", os.path.join(case_inflow_dir, "Low.bts"))
+                                        for T in range(1, n_turbines + 1):
+                                            shutil.copy(ts_hr_filename[:-4] + f"{T}.bts", os.path.join(case_inflow_dir, f"High_T{T}.bts"))
+
+
                                         # Print the case information to a yaml file
                                         case_info_filename = os.path.join(case_dir, "case_info.yaml")
                                         with open(case_info_filename, "w") as f:
