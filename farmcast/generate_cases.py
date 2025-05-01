@@ -83,6 +83,14 @@ def generate_cases(n_turbines=3,
                             
                             # Now do turbsim high res for each turbine
                             for T in range(1, n_turbines + 1):
+                                # If .bts files exist, generate the time series file
+                                ts_lr_bts = ts_lr_filename[:-3] + ".bts"
+                                if os.path.exists(ts_lr_bts):
+                                    # Generate the time series file
+                                    AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, WT_X[T-1], WT_Y[T-1], hub_height, T)
+                                else:
+                                    AnalysisTime_HR = AnalysisTime_LR
+                                
                                 ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
                                 fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
                                 fst_vt["TurbSim"]["URef"] = ws_i
@@ -94,18 +102,12 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
                                 TimeStep_HR = np.round(np.min([0.05, TimeStep_LR / 10]),2)
                                 fst_vt["TurbSim"]["DT"] = TimeStep_HR
-                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
+                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
                                 UserFile = "\"" + ts_hr_filename[:-3] + ".txt" + "\""
                                 fst_vt["TurbSim"]["UserFile"] = UserFile
                                 turbsim_hr.append(ts_hr_filename)
                                 write_turbsim_in(fst_vt, ts_hr_filename)
-
-                                # If .bts files exist, generate the time series file
-                                ts_lr_bts = ts_lr_filename[:-3] + ".bts"
-                                if os.path.exists(ts_lr_bts):
-                                    # Generate the time series file
-                                    generateTimeSeriesFile(ts_lr_bts, WT_X[T-1], WT_Y[T-1], hub_height, T)
 
                             # Set ambient wind parameters
                             # Low res first

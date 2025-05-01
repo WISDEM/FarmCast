@@ -39,7 +39,7 @@ def set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction,
     GridHeight_LR = 1.1 * rotor_diameter
     GridWidth_LR = 1.1 * (rotor_diameter + 2. * np.max(spacing) * (n_turbines - 1) * rotor_diameter * np.sin(np.radians(np.max(abs(np.array(wind_direction))))))
     # Set the analysis time based on the lowest wind speed and highest spacing, plus transient
-    AnalysisTime_LR = (n_turbines - 1) * np.max(spacing) * rotor_diameter / np.min(ws) + transient + analysis_time
+    AnalysisTime_LR = np.ceil((n_turbines - 1) * np.max(spacing) * rotor_diameter / np.min(ws) + transient + analysis_time)
     # Set the time step based on the lowest wind speed and rotor diameter. It cannot be larger than 1 s
     TimeStep_LR = np.round(np.min([1., Cmeander * rotor_diameter / (np.min(ws) * 10.0)]), 1)
 

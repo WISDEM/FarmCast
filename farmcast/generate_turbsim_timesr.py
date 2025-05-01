@@ -116,3 +116,5 @@ def generateTimeSeriesFile(filename, x, y, z, T):
 
     writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel, vvel, wvel, time)
 
+    return len(bts_data['t']) / bts_data['dt']
+
