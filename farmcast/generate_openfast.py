@@ -33,10 +33,13 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, 
     if not os.path.exists(source_dir):
         raise FileNotFoundError(f"Source directory '{source_dir}' does not exist.")
 
-    for file_name in os.listdir(source_dir):
-        full_file_name = os.path.join(source_dir, file_name)
-        if os.path.isfile(full_file_name):
-            destination_file = os.path.join(output_path_openfast, file_name)
+    for root, dirs, files in os.walk(source_dir):
+        relative_path = os.path.relpath(root, source_dir)
+        destination_dir = os.path.join(output_path_openfast, relative_path)
+        os.makedirs(destination_dir, exist_ok=True)
+        for file_name in files:
+            full_file_name = os.path.join(root, file_name)
+            destination_file = os.path.join(destination_dir, file_name)
             with open(full_file_name, 'rb') as src, open(destination_file, 'wb') as dst:
                 dst.write(src.read())
 

@@ -237,9 +237,13 @@ def generate_cases(n_turbines=3,
                                         # Rename the .bts files to Low and High
                                         case_inflow_dir = os.path.join(case_dir, "inflow")
                                         os.makedirs(case_inflow_dir, exist_ok=True)
-                                        shutil.copy(ts_lr_filename[:-3] + ".bts", os.path.join(case_inflow_dir, "Low.bts"))
+                                        bts_file_lr = ts_lr_filename[:-3] + ".bts"
+                                        if os.path.exists(bts_file_lr):
+                                            shutil.copy(bts_file_lr, os.path.join(case_inflow_dir, "Low.bts"))
                                         for T in range(1, n_turbines + 1):
-                                            shutil.copy(ts_hr_filename[:-4] + f"{T}.bts", os.path.join(case_inflow_dir, f"HighT{T}.bts"))
+                                            bts_file_hr = ts_hr_filename[:-4] + f"{T}.bts"
+                                            if os.path.isexists(bts_file_hr):
+                                                shutil.copy(bts_file_hr, os.path.join(case_inflow_dir, f"HighT{T}.bts"))
 
 
                                         # Print the case information to a yaml file
