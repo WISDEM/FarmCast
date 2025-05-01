@@ -242,7 +242,7 @@ def generate_cases(n_turbines=3,
                                             shutil.copy(bts_file_lr, os.path.join(case_inflow_dir, "Low.bts"))
                                         for T in range(1, n_turbines + 1):
                                             bts_file_hr = ts_hr_filename[:-4] + f"{T}.bts"
-                                            if os.path.isexists(bts_file_hr):
+                                            if os.path.exists(bts_file_hr):
                                                 shutil.copy(bts_file_hr, os.path.join(case_inflow_dir, f"HighT{T}.bts"))
 
 
