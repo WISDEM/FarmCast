@@ -8,6 +8,8 @@ base_dir = os.path.dirname(run_dir)
 
 # Set the username for Kestrel
 hpc_email = 'pbortolo@nrel.gov'
+path2turbsim = '/projects/windse/cbay/solvers/turbsim'
+path2fastfarm = '/projects/windse/cbay/solvers/FAST.Farm'
 
 # Set the output directory for the generated files
 output_dir = os.path.join(os.path.dirname(base_dir), "FarmCast_runs")
@@ -60,11 +62,11 @@ turbsim_lr, turbsim_hr = generate_cases(
 
 # Create the slurm files for low res turbsim
 slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_lr")
-create_slurm_ts_files(turbsim_lr, slurm_dir, slurm_email = hpc_email)
+create_slurm_ts_files(turbsim_lr, slurm_dir, slurm_email = hpc_email, path2turbsim = path2turbsim)
 slurm_dir = os.path.join(output_dir, "slurm_files", "turbsim_hr")
-create_slurm_ts_files(turbsim_hr, slurm_dir, slurm_email = hpc_email)
+create_slurm_ts_files(turbsim_hr, slurm_dir, slurm_email = hpc_email, path2turbsim = path2turbsim)
 
 # Create the slurm files for each case
-create_slurm_ff_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email)
+create_slurm_ff_files(n_cases, n_turbines, output_dir, slurm_email = hpc_email, path2fastfarm = path2fastfarm)
 
 print(f"All {n_cases} successfully generated in {output_dir}.")

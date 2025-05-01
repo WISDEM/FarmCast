@@ -1,6 +1,6 @@
 import os
 
-def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse"):
+def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse", path2fastfarm = "FAST.Farm"):
     """
     Create SLURM job submission files for each fastfarm case.
 
@@ -18,6 +18,8 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
         The email address for SLURM notifications. Default is "username".
     alloc : str, optional
         The SLURM allocation name. Default is "windse".
+    path2fastfarm : str, optional
+        Path to fastfarm executable
     Returns
     -------
     None
@@ -53,11 +55,11 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
             
             for j in range(n_cases):
                 id_case = i*n_cases+j
-                f.write(f"fastfarm ../../cases/case_{id_case}/fastfarm/generated.fstf &\n")
+                f.write(f"{path2fastfarm} ../../cases/case_{id_case}/fastfarm/generated.fstf &\n")
             f.close()
     return None
 
-def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse"):
+def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse", path2turbsim = "turbsim"):
     """
     Create SLURM job submission files for each turbsim case.
 
@@ -73,6 +75,8 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
         The email address for SLURM notifications. Default is "username".
     alloc : str, optional
         The SLURM allocation name. Default is "windse".
+    path2turbsim : str, optional
+        Path to turbsim executable
     Returns
     -------
     None
@@ -106,6 +110,6 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
             
             for j in range(n_cases):
                 id_case = i*n_cases+j
-                f.write(f"turbsim {turbsim_files[id_case]} &\n")
+                f.write(f"{path2turbsim} {turbsim_files[id_case]} &\n")
             f.close()
     return None
