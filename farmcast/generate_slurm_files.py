@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse", path2fastfarm = "FAST.Farm"):
     """
@@ -26,7 +27,7 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
     """
 
     n_runs_per_node = processors_per_node // (n_turbines + 1)
-    n_slumrm_files = max([1, n_cases // n_runs_per_node])
+    n_slumrm_files = max([1, int(np.ceil(n_cases / n_runs_per_node))])
     
     # Create a directory for SLURM files
     slurm_dir = os.path.join(output_dir, "slurm_files", "fastfarm")
@@ -90,7 +91,7 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
 
     n_cases = len(turbsim_files)
     n_sims_per_node = min([processors_per_node, n_cases])
-    n_slumrm_files = max([1, n_cases // processors_per_node])
+    n_slumrm_files = max([1, int(np.ceil(n_cases / processors_per_node))])
     
     os.makedirs(slurm_dir, exist_ok=True)
 
