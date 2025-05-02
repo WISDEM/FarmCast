@@ -12,7 +12,8 @@ def test_generate_turbsim_timesr():
     x = 0.0
     y = 0.0
     z = 0.0
+    TimeStep_HR = 0.1
     T = 1
 
     # Call the function to generate the time-series file
-    generateTimeSeriesFile(filename, x, y, z, T)
+    generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, T)
