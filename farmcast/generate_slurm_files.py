@@ -25,7 +25,7 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
     None
     """
 
-    n_runs_per_node = processors_per_node // n_turbines
+    n_runs_per_node = processors_per_node // (n_turbines + 1)
     n_slumrm_files = max([1, n_cases // n_runs_per_node])
     
     # Create a directory for SLURM files
@@ -33,6 +33,7 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
     os.makedirs(slurm_dir, exist_ok=True)
 
     # Create SLURM files for each case
+    f_all = open(os.path.join(slurm_dir, "submit_all_jobs.sh"), "w")
     for i in range(n_slumrm_files):
         slurm_filename = os.path.join(slurm_dir, f"slurm_job_{i}.sh")
         with open(slurm_filename, "w") as f:
@@ -53,11 +54,15 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
             f.write("module load tmux intel-oneapi-mkl/2023.2.0-intel mamba\n")
             f.write("\n")
             
-            for j in range(n_cases):
-                id_case = i*n_cases+j
+            for j in range(n_runs_per_node):
+                id_case = i*n_runs_per_node+j
+                if id_case >= n_cases:
+                    break
                 f.write(f"{path2fastfarm} ../../cases/case_{id_case}/fastfarm/generated.fstf &\n")
             f.write("wait\n")
             f.close()
+        f_all.write(f"sbatch {slurm_filename}\n")
+    f_all.close()
     return None
 
 def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, slurm_email = "username", alloc = "windse", path2turbsim = "turbsim"):
@@ -84,11 +89,13 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
     """
 
     n_cases = len(turbsim_files)
+    n_sims_per_node = min([processors_per_node, n_cases])
     n_slumrm_files = max([1, n_cases // processors_per_node])
     
     os.makedirs(slurm_dir, exist_ok=True)
 
     # Create SLURM files for each case
+    f_all = open(os.path.join(slurm_dir, "submit_all_jobs.sh"), "w")
     for i in range(n_slumrm_files):
         slurm_filename = os.path.join(slurm_dir, f"slurm_job_{i}.sh")
         with open(slurm_filename, "w") as f:
@@ -110,10 +117,14 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
             f.write("export OMP_NUM_THREADS=1\n")
             f.write("\n")
             
-            for j in range(n_cases):
-                id_case = i*n_cases+j
+            for j in range(n_sims_per_node):
+                id_case = i*n_sims_per_node+j
+                if id_case >= n_cases:
+                    break
                 f.write(f"{path2turbsim} {turbsim_files[id_case]} &\n")
             
             f.write("wait\n")
             f.close()
+        f_all.write(f"sbatch {slurm_filename}\n")
+    f_all.close()
     return None
