@@ -105,7 +105,8 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["HubHt"] = hub_height
                                 GridHeight_HR = GridHeight_LR
                                 fst_vt["TurbSim"]["GridHeight"] = GridHeight_HR
-                                fst_vt["TurbSim"]["GridWidth"] = (1. + domain_edge_HR[1]) * rotor_diameter
+                                GridWidth_HR = GridHeight_HR # (1. + domain_edge_HR[1]) * rotor_diameter
+                                fst_vt["TurbSim"]["GridWidth"] = GridWidth_HR 
                                 fst_vt["TurbSim"]["TimeStep"] = TimeStep_HR
                                 fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
@@ -144,7 +145,7 @@ def generate_cases(n_turbines=3,
                             # Now high res
 
                             LX_High = (1.+ domain_edge_HR[0]) * rotor_diameter
-                            LY_High = (1.+ domain_edge_HR[1]) * rotor_diameter 
+                            LY_High = GridWidth_HR
                             LZ_High = GridHeight_HR 
                         
                             dX_High_f = ws_i * TimeStep_HR
