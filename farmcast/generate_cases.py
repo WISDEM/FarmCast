@@ -168,7 +168,7 @@ def generate_cases(n_turbines=3,
                         
                             # --- High-res location per turbine
                             X0_High = [x - domain_edge_HR[0] * rotor_diameter for x in WT_X]
-                            Y0_High = [y - (1 + domain_edge_HR[0]) * rotor_diameter for y in WT_Y]                           
+                            Y0_High = [y - 0.5 * GridWidth_HR for y in WT_Y]                           
                             Z0_High = [Z0_Low, Z0_Low, Z0_Low]
 
 
