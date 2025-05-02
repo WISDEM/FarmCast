@@ -71,7 +71,7 @@ def writeTimeSeriesFile(fileOut,yloc,zloc,u,v,w,time):
             f.write(f'\t{time[i]:.2f}\t\t\t  {u[i]:.5f}\t\t\t  {v[i]:.5f}\t\t\t {w[i]:.5f}\n')
 
 
-def generateTimeSeriesFile(filename, x, y, z, T):
+def generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, T):
     """
     Generates a time-series file based on TurbSim binary time-series (BTS) data.
     This function reads a TurbSim BTS file, extracts velocity components at a 
@@ -82,9 +82,10 @@ def generateTimeSeriesFile(filename, x, y, z, T):
         x (float): x-coordinate of the desired location.
         y (float): y-coordinate of the desired location.
         z (float): z-coordinate of the desired location.
+        TimeStep_HR (float): Time step for the high-resolution time-series data.
         T (int): Identifier for the output time-series file.
     Returns:
-        None: The function writes the output to a file and does not return any value.
+        AnalysisTime_HR: The total time in the high-resolution time-series data.
     Notes:
         - The function assumes that the BTS file contains velocity components 
           (u, v, w) and spatial coordinates (y, z).
@@ -114,7 +115,15 @@ def generateTimeSeriesFile(filename, x, y, z, T):
 
     timeSeriesOutputFile = filename[:-4] + f'_T{T}.txt'
 
-    writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel, vvel, wvel, time)
+    # Map it to high-res time 
+    time_hr = np.arange(0, time[-1], TimeStep_HR)
+    uvel_hr = np.interp(time_hr, time, uvel)
+    vvel_hr = np.interp(time_hr, time, vvel)
+    wvel_hr = np.interp(time_hr, time, wvel)
 
-    return len(bts_data['t']) / bts_data['dt']
+    writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel_hr, vvel_hr, wvel_hr, time_hr)
+
+    AnalysisTime_HR = len(time_hr) * TimeStep_HR
+
+    return AnalysisTime_HR
 
