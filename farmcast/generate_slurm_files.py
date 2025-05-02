@@ -56,6 +56,7 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
             for j in range(n_cases):
                 id_case = i*n_cases+j
                 f.write(f"{path2fastfarm} ../../cases/case_{id_case}/fastfarm/generated.fstf &\n")
+            f.write("wait\n")
             f.close()
     return None
 
@@ -112,5 +113,7 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
             for j in range(n_cases):
                 id_case = i*n_cases+j
                 f.write(f"{path2turbsim} {turbsim_files[id_case]} &\n")
+            
+            f.write("wait\n")
             f.close()
     return None

@@ -28,6 +28,8 @@ def generate_cases(n_turbines=3,
                    T1_yaw_misalignment=np.arange(-30., 30., 10.),
                    T2_yaw_misalignment=np.arange(-20., 20., 10.),
                    curtailment_T1T2=np.arange(20., 100., 5.),
+                   domain_edge_LR = [1., 1.],
+                   domain_edge_HR = [0.2, 0.2], # extra spacing along x (left and right) and y (top and bottom ) in D
                    output_dir=run_dir):
 
     # Create inflow directory
@@ -42,7 +44,7 @@ def generate_cases(n_turbines=3,
     fst_vt["FASTFarm"] = {}
 
     # Set the parameters for the low resolution TurbSim grid
-    GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR = set_low_res_turbsim(n_turbines, rotor_diameter, ws, spacing, wind_direction)
+    GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR = set_low_res_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge_LR = domain_edge_LR)
 
     turbsim_lr = []
     turbsim_hr = []
@@ -87,8 +89,10 @@ def generate_cases(n_turbines=3,
                                 ts_lr_bts = ts_lr_filename[:-3] + ".bts"
                                 TimeStep_HR = np.round(np.min([0.1, TimeStep_LR / 10]),2)
                                 if os.path.exists(ts_lr_bts):
-                                    # Generate the time series file
-                                    AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, WT_X[T-1], WT_Y[T-1], hub_height, TimeStep_HR, T)
+                                    # Generate the time series file at the locations x and y
+                                    x = WT_X[T-1] + (domain_edge_LR[0] - domain_edge_HR[0]) * rotor_diameter
+                                    y = WT_Y[T-1]
+                                    AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, domain_edge_LR, domain_edge_HR, T)
                                 else:
                                     AnalysisTime_HR = AnalysisTime_LR
                                 
@@ -99,8 +103,9 @@ def generate_cases(n_turbines=3,
                                 fst_vt["TurbSim"]["PLExp"] = shear_i
                                 fst_vt["TurbSim"]["RefHt"] = hub_height
                                 fst_vt["TurbSim"]["HubHt"] = hub_height
-                                fst_vt["TurbSim"]["GridHeight"] = 1.1 * rotor_diameter 
-                                fst_vt["TurbSim"]["GridWidth"] = 1.1 * rotor_diameter
+                                GridHeight_HR = GridHeight_LR
+                                fst_vt["TurbSim"]["GridHeight"] = GridHeight_HR
+                                fst_vt["TurbSim"]["GridWidth"] = (1. + domain_edge_HR[1]) * rotor_diameter
                                 fst_vt["TurbSim"]["TimeStep"] = TimeStep_HR
                                 fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
@@ -119,11 +124,11 @@ def generate_cases(n_turbines=3,
                             dY_Low = GridWidth_LR / (NY_Low - 1)
                             dZ_Low = GridHeight_LR / (NZ_Low - 1)
                         
-                            X0_Low = getMultipleOf(np.min(WT_X), multipleof=dX_Low)
+                            X0_Low = getMultipleOf(np.min(WT_X) - domain_edge_LR[0] * rotor_diameter, multipleof=dX_Low)
                             Y0_Low = - GridWidth_LR * 0.5
                             Z0_Low = hub_height - GridHeight_LR * 0.5
                         
-                            XMax_Low = getMultipleOf(np.max(WT_X), multipleof=dX_Low)
+                            XMax_Low = getMultipleOf(np.max(WT_X) + domain_edge_LR[0] * rotor_diameter, multipleof=dX_Low)
                             LX_Low = XMax_Low-X0_Low
                         
                             NX_Low = int(np.ceil(LX_Low/dX_Low)+1)
@@ -138,9 +143,9 @@ def generate_cases(n_turbines=3,
 
                             # Now high res
 
-                            LX_High = 1.1 * rotor_diameter
-                            LY_High = 1.1 * rotor_diameter 
-                            LZ_High = 1.1 * rotor_diameter 
+                            LX_High = (1.+ domain_edge_HR[0]) * rotor_diameter
+                            LY_High = (1.+ domain_edge_HR[1]) * rotor_diameter 
+                            LZ_High = GridHeight_HR 
                         
                             dX_High_f = ws_i * TimeStep_HR
                             dX_High_f = round(5./dX_High_f) * dX_High_f
@@ -161,8 +166,8 @@ def generate_cases(n_turbines=3,
                             # assert (NZ_High-1)*dZ_High == LZ_High
                         
                             # --- High-res location per turbine
-                            X0_High = WT_X
-                            Y0_High = [y - 1.1 / 2. * rotor_diameter for y in WT_Y]
+                            X0_High = [x - domain_edge_HR[0] * rotor_diameter for x in WT_X]
+                            Y0_High = [y - (1 + domain_edge_HR[0]) * rotor_diameter for y in WT_Y]                           
                             Z0_High = [Z0_Low, Z0_Low, Z0_Low]
 
 
@@ -187,7 +192,6 @@ def generate_cases(n_turbines=3,
                                         os.makedirs(case_dir, exist_ok=True)
 
                                         # Generate .fsft file
-                                        NX_Low = int(np.ceil(LX_Low/dX_Low)+1)
                                         fst_vt["FASTFarm"]["DT_Low"] = TimeStep_LR
                                         fst_vt["FASTFarm"]["DT_High"] = TimeStep_HR
                                         fst_vt["FASTFarm"]["NX_Low"] = NX_Low
