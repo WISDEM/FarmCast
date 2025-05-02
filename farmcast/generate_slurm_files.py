@@ -106,6 +106,7 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
             f.write("\n")
             f.write("module purge\n")
             f.write("module load tmux intel-oneapi-mkl/2023.2.0-intel mamba\n")
+            f.write("export OMP_NUM_THREADS=1\n")
             f.write("\n")
             
             for j in range(n_cases):
