@@ -66,6 +66,8 @@ def generate_cases(n_turbines=3,
                     fst_vt["TurbSim"]["GridWidth"] = GridWidth_LR
                     fst_vt["TurbSim"]["TimeStep"] = TimeStep_LR
                     fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
+                    fst_vt["TurbSim"]["TurbModel"] = "IECKAI"
+                    fst_vt["TurbSim"]["UserFile"] = "unused"
                     turbsim_lr.append(ts_lr_filename)
                     write_turbsim_in(fst_vt, ts_lr_filename)
 
