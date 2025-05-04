@@ -29,7 +29,7 @@ def generate_cases(n_turbines=3,
                    T2_yaw_misalignment=np.arange(-20., 20., 10.),
                    curtailment_T1T2=np.arange(20., 100., 5.),
                    domain_edge_LR = [1., 1.],
-                   domain_edge_HR = [0.2, 0.2], # extra spacing along x (left and right) and y (top and bottom ) in D
+                   domain_edge_HR = [0.3, 0.3], # extra spacing along x (left and right) and y (top and bottom ) in D
                    output_dir=run_dir):
 
     # Create inflow directory
