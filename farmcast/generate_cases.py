@@ -44,7 +44,7 @@ def generate_cases(n_turbines=3,
     fst_vt["FASTFarm"] = {}
 
     # Set the parameters for the low resolution TurbSim grid
-    GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR = set_low_res_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge_LR = domain_edge_LR)
+    NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR, HubHt_for_TS_LR = set_low_res_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge_LR = domain_edge_LR)
 
     turbsim_lr = []
     turbsim_hr = []
@@ -57,11 +57,13 @@ def generate_cases(n_turbines=3,
                     # Start with low resolution
                     ts_lr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f.in" % (ws_i, seed, TI_i, shear_i))
                     fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
+                    fst_vt["TurbSim"]["NumGrid_Z"] = NumGrid_Z_LR
+                    fst_vt["TurbSim"]["NumGrid_Y"] = NumGrid_Y_LR
                     fst_vt["TurbSim"]["URef"] = ws_i
                     fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
                     fst_vt["TurbSim"]["PLExp"] = shear_i
                     fst_vt["TurbSim"]["RefHt"] = hub_height
-                    fst_vt["TurbSim"]["HubHt"] = hub_height
+                    fst_vt["TurbSim"]["HubHt"] = HubHt_for_TS_LR
                     fst_vt["TurbSim"]["GridHeight"] = GridHeight_LR 
                     fst_vt["TurbSim"]["GridWidth"] = GridWidth_LR
                     fst_vt["TurbSim"]["TimeStep"] = TimeStep_LR
