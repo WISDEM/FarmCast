@@ -3,7 +3,7 @@ import os, shutil
 from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
-from farmcast.low_res_turbsim import set_low_res_turbsim
+from farmcast.turbsim import set_turbsim
 from farmcast.generate_turbsim_timesr import generateTimeSeriesFile
 from farmcast.utils import getMultipleOf
 
@@ -44,7 +44,7 @@ def generate_cases(n_turbines=3,
     fst_vt["FASTFarm"] = {}
 
     # Set the parameters for the low resolution TurbSim grid
-    NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR, HubHt_for_TS_LR = set_low_res_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge_LR = domain_edge_LR)
+    NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR, HubHt_for_TS_LR = set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge = domain_edge_LR, dy=10., dz=10., res = 'low')
 
     turbsim_lr = []
     turbsim_hr = []
@@ -99,17 +99,21 @@ def generate_cases(n_turbines=3,
                                     AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, T)
                                 else:
                                     AnalysisTime_HR = AnalysisTime_LR
+
+                                NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR , GridWidth_HR, AnalysisTime_HR, TimeStep_HR, HubHt_for_TS_HR = set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge = domain_edge_HR, dy=5., dz=5., res = 'high')
                                 
                                 ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
                                 fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
+                                fst_vt["TurbSim"]["NumGrid_Z"] = NumGrid_Z_HR
+                                fst_vt["TurbSim"]["NumGrid_Y"] = NumGrid_Y_HR
                                 fst_vt["TurbSim"]["URef"] = ws_i
                                 fst_vt["TurbSim"]["IECturbc"] = TI_i*100.
                                 fst_vt["TurbSim"]["PLExp"] = shear_i
                                 fst_vt["TurbSim"]["RefHt"] = hub_height
-                                fst_vt["TurbSim"]["HubHt"] = hub_height
-                                GridHeight_HR = GridHeight_LR
+                                fst_vt["TurbSim"]["HubHt"] = HubHt_for_TS_HR
+                                # GridHeight_HR = GridHeight_LR
                                 fst_vt["TurbSim"]["GridHeight"] = GridHeight_HR
-                                GridWidth_HR = GridHeight_HR # (1. + domain_edge_HR[1]) * rotor_diameter
+                                # GridWidth_HR = GridHeight_HR # (1. + domain_edge_HR[1]) * rotor_diameter
                                 fst_vt["TurbSim"]["GridWidth"] = GridWidth_HR 
                                 fst_vt["TurbSim"]["TimeStep"] = TimeStep_HR
                                 fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
