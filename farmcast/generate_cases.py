@@ -29,7 +29,7 @@ def generate_cases(n_turbines=3,
                    T2_yaw_misalignment=np.arange(-20., 20., 10.),
                    curtailment_T1T2=np.arange(20., 100., 5.),
                    domain_edge_LR = [1., 1.],
-                   domain_edge_HR = [0.3, 0.3], # extra spacing along x (left and right) and y (top and bottom ) in D
+                   domain_edge_HR = [0.2, 0.2], # extra spacing along x (left and right) and y (top and bottom ) in D
                    output_dir=run_dir):
 
     # Create inflow directory
@@ -91,14 +91,14 @@ def generate_cases(n_turbines=3,
                             for T in range(1, n_turbines + 1):
                                 # If .bts files exist, generate the time series file
                                 ts_lr_bts = ts_lr_filename[:-3] + ".bts"
-                                TimeStep_HR = np.round(np.min([0.1, TimeStep_LR / 10]),2)
+                                TimeStep_HR = 0.25 # np.round(np.min([0.1, TimeStep_LR / 10]),2)
                                 if os.path.exists(ts_lr_bts):
                                     # Generate the time series file at the locations x and y
                                     x = WT_X[T-1] + (domain_edge_LR[0] - domain_edge_HR[0]) * rotor_diameter
                                     y = WT_Y[T-1]
                                     AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, T)
                                 else:
-                                    AnalysisTime_HR = AnalysisTime_LR
+                                    AnalysisTime_HR = 0.
 
                                 NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR , GridWidth_HR, AnalysisTime_HR, TimeStep_HR, HubHt_for_TS_HR = set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge = domain_edge_HR, dy=5., dz=5., res = 'high')
                                 
@@ -116,7 +116,7 @@ def generate_cases(n_turbines=3,
                                 # GridWidth_HR = GridHeight_HR # (1. + domain_edge_HR[1]) * rotor_diameter
                                 fst_vt["TurbSim"]["GridWidth"] = GridWidth_HR 
                                 fst_vt["TurbSim"]["TimeStep"] = TimeStep_HR
-                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
+                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
                                 UserFile = "\"" + ts_hr_filename[:-3] + ".txt" + "\""
                                 fst_vt["TurbSim"]["UserFile"] = UserFile
