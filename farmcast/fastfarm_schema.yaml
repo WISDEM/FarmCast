@@ -307,7 +307,7 @@ properties:
                 description: Switch to select how the wake plane velocity is projected in AWAE 1) keep all components, 2) project against plane normal or DEFAULT [DEFAULT=1) if Mod_Wake is 1 or 3, or DEFAULT=2) if Mod_Wake is 2] (switch)
             WAT:
                 type: integer
-                default: 2
+                default: 1
                 description: Switch between wake-added turbulence box options 0) no wake added turbulence, 1) predefined turbulence box, 2) user defined turbulence box (switch)
             WAT_BoxFile:
                 type: string
