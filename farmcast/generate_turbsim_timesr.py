@@ -71,7 +71,7 @@ def writeTimeSeriesFile(fileOut,yloc,zloc,u,v,w,time):
             f.write(f'\t{time[i]:.2f}\t\t\t  {u[i]:.5f}\t\t\t  {v[i]:.5f}\t\t\t {w[i]:.5f}\n')
 
 
-def generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, T):
+def generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, AnalysisTime_LR, T):
     """
     Generates a time-series file based on TurbSim binary time-series (BTS) data.
     This function reads a TurbSim BTS file, extracts velocity components at a 
@@ -106,20 +106,22 @@ def generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, T):
     yloc = bts_data['y'][iy] - y
     zloc = bts_data['z'][iz] - z
     time = bts_data['t']
+    id_end = np.argmin(abs(time - AnalysisTime_LR))
     # Get time-series given rolling
     Vxyz = bts_data['u'][0,:,iy,iz]
     start_time_step = round( (x/Vxyz.mean())/bts_data['dt'] )
-    uvel = np.roll(bts_data['u'][0, :, iy, iz], start_time_step)
-    vvel = np.roll(bts_data['u'][1, :, iy, iz], start_time_step)
-    wvel = np.roll(bts_data['u'][2, :, iy, iz], start_time_step)
+    uvel = np.roll(bts_data['u'][0, :id_end, iy, iz], start_time_step)
+    vvel = np.roll(bts_data['u'][1, :id_end, iy, iz], start_time_step)
+    wvel = np.roll(bts_data['u'][2, :id_end, iy, iz], start_time_step)
 
     timeSeriesOutputFile = filename[:-4] + f'_T{T}.txt'
 
     # Map it to high-res time 
-    time_hr = np.arange(0, time[-1], TimeStep_HR)
-    uvel_hr = np.interp(time_hr, time, uvel)
-    vvel_hr = np.interp(time_hr, time, vvel)
-    wvel_hr = np.interp(time_hr, time, wvel)
+    time_hr = np.arange(0, time[id_end], TimeStep_HR)
+    time_hr = np.r_([time_hr, time_hr[-1]+TimeStep_HR])
+    uvel_hr = np.interp(time_hr, time[:id_end], uvel)
+    vvel_hr = np.interp(time_hr, time[:id_end], vvel)
+    wvel_hr = np.interp(time_hr, time[:id_end], wvel)
 
     writeTimeSeriesFile(timeSeriesOutputFile, yloc, zloc, uvel_hr, vvel_hr, wvel_hr, time_hr)
 

@@ -100,9 +100,7 @@ def generate_cases(n_turbines=3,
                                     # Generate the time series file at the locations x and y
                                     x = WT_X[T-1] + (domain_edge_LR[0] - domain_edge_HR[0]) * rotor_diameter
                                     y = WT_Y[T-1]
-                                    AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, T)
-                                else:
-                                    AnalysisTime_HR = 0.
+                                    generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, AnalysisTime_LR, T)
 
                                 NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR, GridWidth_HR, \
                                 _, _, HubHt_for_TS_HR = set_turbsim(
