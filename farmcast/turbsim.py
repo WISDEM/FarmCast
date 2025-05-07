@@ -52,13 +52,26 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
 
     Height = hub_height  + 2 * rotor_diameter 
     if res == 'low':
-        Width = (rotor_diameter + 2. * np.max(spacing) * (n_turbines - 1) * rotor_diameter * np.sin(np.radians(np.max(abs(np.array(wind_direction)))))) + 2 * domain_edge[1] * rotor_diameter
+        Width = (
+            rotor_diameter 
+            + 2. * np.max(spacing) * (n_turbines - 1) * rotor_diameter * np.sin(
+            np.radians(np.max(abs(np.array(wind_direction))))
+            )
+            + 2 * domain_edge[1] * rotor_diameter
+        )
         Height = hub_height  + 2 * rotor_diameter 
     else:
         Width = rotor_diameter * (1. + domain_edge[1])
         Height = hub_height  + 0.5 * rotor_diameter * (1. + domain_edge[1])
     # Set the analysis time based on the lowest wind speed and highest spacing, plus transient
-    AnalysisTime = np.ceil(((n_turbines - 1) * np.max(spacing) * rotor_diameter + 2 * domain_edge[0] * rotor_diameter)/ np.min(ws) + transient + analysis_time)
+    AnalysisTime = np.ceil(
+        (
+            (n_turbines - 1) * np.max(spacing) * rotor_diameter 
+            + 2 * domain_edge[0] * rotor_diameter
+        ) / np.min(ws) 
+        + transient 
+        + analysis_time
+    )
     # Set the time step based on the lowest wind speed and rotor diameter. It cannot be larger than 1 s
     TimeStep = 0.25 #np.round(np.min([1., Cmeander * rotor_diameter / (np.min(ws) * 10.0)]), 1)
     ny = np.ceil(Width/dy)+1
@@ -77,4 +90,5 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
     HubHt_for_TS = 1. - 0.5*Dgrid + GridHeight
     
 
-    return NumGrid_Z, NumGrid_Y, GridHeight , GridWidth, AnalysisTime, TimeStep, HubHt_for_TS
+    return (NumGrid_Z, NumGrid_Y, GridHeight, GridWidth, 
+            AnalysisTime, TimeStep, HubHt_for_TS)
