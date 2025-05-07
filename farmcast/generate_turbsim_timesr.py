@@ -117,8 +117,7 @@ def generateTimeSeriesFile(filename, x, y, z, TimeStep_HR, AnalysisTime_LR, T):
     timeSeriesOutputFile = filename[:-4] + f'_T{T}.txt'
 
     # Map it to high-res time 
-    time_hr = np.arange(0, time[id_end], TimeStep_HR)
-    time_hr = np.r_([time_hr, time_hr[-1]+TimeStep_HR])
+    time_hr = np.arange(0, time[id_end] + TimeStep_HR, TimeStep_HR)
     uvel_hr = np.interp(time_hr, time[:id_end], uvel)
     vvel_hr = np.interp(time_hr, time[:id_end], vvel)
     wvel_hr = np.interp(time_hr, time[:id_end], wvel)
