@@ -95,6 +95,7 @@ def generate_cases(n_turbines=3,
                             for T in range(1, n_turbines + 1):
                                 # If .bts files exist, generate the time series file
                                 ts_lr_bts = ts_lr_filename[:-3] + ".bts"
+                                TimeStep_HR = 0.25
                                 if os.path.exists(ts_lr_bts):
                                     # Generate the time series file at the locations x and y
                                     x = WT_X[T-1] + (domain_edge_LR[0] - domain_edge_HR[0]) * rotor_diameter
@@ -104,7 +105,7 @@ def generate_cases(n_turbines=3,
                                     AnalysisTime_HR = 0.
 
                                 NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR, GridWidth_HR, \
-                                _, TimeStep_HR, HubHt_for_TS_HR = set_turbsim(
+                                _, _, HubHt_for_TS_HR = set_turbsim(
                                     n_turbines, rotor_diameter, hub_height, ws, spacing, 
                                     wind_direction, domain_edge=domain_edge_HR, dy=5., dz=5., res='high'
                                 )
