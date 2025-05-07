@@ -44,7 +44,11 @@ def generate_cases(n_turbines=3,
     fst_vt["FASTFarm"] = {}
 
     # Set the parameters for the low resolution TurbSim grid
-    NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR , GridWidth_LR, AnalysisTime_LR, TimeStep_LR, HubHt_for_TS_LR = set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge = domain_edge_LR, dy=10., dz=10., res = 'low')
+    NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR, GridWidth_LR, AnalysisTime_LR, \
+    TimeStep_LR, HubHt_for_TS_LR = set_turbsim(
+        n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, 
+        domain_edge=domain_edge_LR, dy=10., dz=10., res='low'
+    )
 
     turbsim_lr = []
     turbsim_hr = []
@@ -100,7 +104,11 @@ def generate_cases(n_turbines=3,
                                 else:
                                     AnalysisTime_HR = 0.
 
-                                NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR , GridWidth_HR, AnalysisTime_HR, TimeStep_HR, HubHt_for_TS_HR = set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, domain_edge = domain_edge_HR, dy=5., dz=5., res = 'high')
+                                NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR, GridWidth_HR, \
+                                AnalysisTime_HR, TimeStep_HR, HubHt_for_TS_HR = set_turbsim(
+                                    n_turbines, rotor_diameter, hub_height, ws, spacing, 
+                                    wind_direction, domain_edge=domain_edge_HR, dy=10., dz=10., res='high'
+                                )
                                 
                                 ts_hr_filename = os.path.join(inflow_dir, "ws%.2f_s%u_TI%.2f_shear%.2f_T%u.in" % (ws_i, seed, TI_i, shear_i, T))
                                 fst_vt["TurbSim"]["RandSeed1"] = seedValues[seed]
@@ -127,15 +135,15 @@ def generate_cases(n_turbines=3,
                             # Low res first
                             dT_Low = getMultipleOf(TimeStep_LR, multipleof=TimeStep_HR)
                             dX_Low = getMultipleOf(ws_i*dT_Low, multipleof=ws_i*TimeStep_HR)
-                            NY_Low = fst_vt["TurbSim"]["NumGrid_Y"]
-                            NZ_Low = fst_vt["TurbSim"]["NumGrid_Z"]
+                            NY_Low = NumGrid_Y_LR
+                            NZ_Low = NumGrid_Z_LR
                             
                             dY_Low = GridWidth_LR / (NY_Low - 1)
                             dZ_Low = GridHeight_LR / (NZ_Low - 1)
                         
                             X0_Low = getMultipleOf(np.min(WT_X) - domain_edge_LR[0] * rotor_diameter, multipleof=dX_Low)
                             Y0_Low = - GridWidth_LR * 0.5
-                            Z0_Low = hub_height - GridHeight_LR * 0.5
+                            Z0_Low = 1.
                         
                             XMax_Low = getMultipleOf(np.max(WT_X) + domain_edge_LR[0] * rotor_diameter, multipleof=dX_Low)
                             LX_Low = XMax_Low-X0_Low

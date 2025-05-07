@@ -53,8 +53,7 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
     Height = hub_height  + 2 * rotor_diameter 
     if res == 'low':
         Width = (
-            rotor_diameter 
-            + 2. * np.max(spacing) * (n_turbines - 1) * rotor_diameter * np.sin(
+            2. * np.max(spacing) * (n_turbines - 1) * rotor_diameter * np.sin(
             np.radians(np.max(abs(np.array(wind_direction))))
             )
             + 2 * domain_edge[1] * rotor_diameter
