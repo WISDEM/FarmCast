@@ -4,7 +4,7 @@ from farmcast.write_fastfarm_fsft import generate_fsft
 from farmcast.write_turbsim_in import write_turbsim_in
 from farmcast.generate_openfast import generate_openfast
 from farmcast.turbsim import set_turbsim
-from farmcast.generate_turbsim_timesr import generateTimeSeriesFile
+from farmcast.generate_turbsim_timesr import generateTimeSeriesFile, read_turbsim_bts
 from farmcast.utils import getMultipleOf
 
 run_dir = os.path.dirname(os.path.realpath(__file__))
@@ -30,6 +30,7 @@ def generate_cases(n_turbines=3,
                    curtailment_T1T2=np.arange(20., 100., 5.),
                    domain_edge_LR = [1., 1.],
                    domain_edge_HR = [0.2, 0.2], # extra spacing along x (left and right) and y (top and bottom ) in D
+                   cmax = 5.,
                    output_dir=run_dir):
 
     # Create inflow directory
@@ -76,6 +77,13 @@ def generate_cases(n_turbines=3,
                     fst_vt["TurbSim"]["UserFile"] = "unused"
                     turbsim_lr.append(ts_lr_filename)
                     write_turbsim_in(fst_vt, ts_lr_filename)
+
+                    bts_low = ts_lr_filename[:-3] + ".bts"
+                    meanU_Low = 1.
+                    if os.path.exists(bts_low):
+                        bts_data_low = read_turbsim_bts(bts_low)
+                        iz = np.argmin(abs(bts_data_low['z'] - hub_height))
+                        meanU_Low = np.mean(bts_data_low['u'][0,:,0,iz])
 
                     for spacing_i in spacing:
                         for wd_i in wind_direction:
@@ -129,10 +137,27 @@ def generate_cases(n_turbines=3,
                                 turbsim_hr.append(ts_hr_filename)
                                 write_turbsim_in(fst_vt, ts_hr_filename)
 
+
+
                             # Set ambient wind parameters
                             # Low res first
-                            # dT_Low = TimeStep_LR #getMultipleOf(TimeStep_LR, multipleof=TimeStep_HR)
-                            dX_Low = 10. #getMultipleOf(ws_i*dT_Low, multipleof=ws_i*TimeStep_HR)
+                            dT_High = TimeStep_HR
+                            dt_low_desired = 1.
+                            dT_Low = getMultipleOf(dt_low_desired, multipleof=dT_High)
+
+
+                            bts_high = ts_hr_filename[:-3] + ".bts"
+                            meanU_High = 1.
+                            if os.path.exists(bts_high):
+                                bts_data_high = read_turbsim_bts(bts_high)
+                                iz = np.argmin(abs(bts_data_high['z'] - hub_height))
+                                meanU_High = np.mean(bts_data_high['u'][0,:,0,iz])
+
+                            dX_High = meanU_High*dT_High
+                            dX_High = round(cmax/dX_High) * dX_High
+                            dX_Low = getMultipleOf(meanU_Low*dT_Low, multipleof=dX_High)
+                            if dX_Low == 0.:
+                                dX_Low = dX_High
                             NY_Low = NumGrid_Y_LR
                             NZ_Low = NumGrid_Z_LR
                             
@@ -146,14 +171,7 @@ def generate_cases(n_turbines=3,
                             XMax_Low = getMultipleOf(np.max(WT_X) + domain_edge_LR[0] * rotor_diameter, multipleof=dX_Low)
                             LX_Low = XMax_Low-X0_Low
                         
-                            NX_Low = int(np.ceil(LX_Low/dX_Low)+1)
-                            
-                        
-                            # assert NY_Low == int(np.ceil(LY_Low/dY_Low)+1)
-                            # assert NZ_Low == int(np.ceil(LZ_Low/dZ_Low)+1)
-                            # assert (NY_Low-1)*dY_Low == LY_Low
-                            # assert (NZ_Low-1)*dZ_Low == LZ_Low
-                    
+                            NX_Low = int(np.ceil(LX_Low/dX_Low)+1)                
 
 
                             # Now high res
@@ -161,11 +179,10 @@ def generate_cases(n_turbines=3,
                             LX_High = (1.+ domain_edge_HR[0]) * rotor_diameter
                             LY_High = GridWidth_HR
                             LZ_High = GridHeight_HR 
-                        
-                            dX_High_f = 5.
-                            dX_High = [dX_High_f, dX_High_f, dX_High_f]
+                                                    
                             
-                            NX_High = int(np.ceil(LX_High/dX_High_f) + 1)
+                            NX_High = int(np.ceil(LX_High/dX_High) + 1)
+                            dX_High = [dX_High, dX_High, dX_High]
                             NY_High = fst_vt["TurbSim"]["NumGrid_Y"]
                             NZ_High = fst_vt["TurbSim"]["NumGrid_Z"]
 
@@ -174,10 +191,6 @@ def generate_cases(n_turbines=3,
                             dY_High = [dY_High_f, dY_High_f, dY_High_f]
                             dZ_High = [dZ_High_f, dZ_High_f, dZ_High_f]
                         
-                            # assert NY_High == int(np.ceil(LY_High/dY_High)+1)
-                            # assert NZ_High == int(np.ceil(LZ_High/dZ_High)+1)
-                            # assert (NY_High-1)*dY_High == LY_High
-                            # assert (NZ_High-1)*dZ_High == LZ_High
                         
                             # --- High-res location per turbine
                             X0_desired = np.asarray(WT_X)-LX_High/2  # high-res is centered on turbine location
