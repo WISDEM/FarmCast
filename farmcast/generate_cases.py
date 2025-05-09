@@ -256,6 +256,7 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["dX_High"] = dX_High
                                         fst_vt["FASTFarm"]["dY_High"] = dY_High
                                         fst_vt["FASTFarm"]["dZ_High"] = dZ_High
+                                        fst_vt["FASTFarm"]["WrDisDT"] = TimeStep_LR
                                         
                                         os.makedirs(os.path.join(case_dir, "fastfarm"), exist_ok=True)
                                         output_path_fsft = os.path.join(case_dir, "fastfarm", "generated.fstf")
