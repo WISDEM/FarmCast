@@ -1,6 +1,7 @@
 import numpy as np
+from farmcast.utils import getMultipleOf
 
-def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, Cmeander = 1.9, transient = 120, analysis_time = 600, domain_edge = [1., 1., 1., 1.], dy = 10., dz = 10., res = 'low'):
+def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, Cmeander = 1.9, transient = 120, analysis_time = 600, domain_edge = [1., 1., 1., 1.], dy = 10., dz = 10., res = 'low', TimeStep_HR=0.25):
     """
     Configure low-resolution TurbSim parameters for wind turbine simulations.
 
@@ -59,7 +60,8 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
             + 2 * domain_edge[1] * rotor_diameter
         )
         Height = hub_height  + 2 * rotor_diameter
-        TimeStep = Cmeander*rotor_diameter/(10*np.max(ws))
+        TimeStep_Desired = Cmeander*rotor_diameter/(10*np.max(ws))
+        TimeStep = getMultipleOf(TimeStep_Desired, multipleof=TimeStep_HR)
     else:
         Width = rotor_diameter * (1. + domain_edge[1])
         Height = hub_height  + 0.5 * rotor_diameter * (1. + domain_edge[1])

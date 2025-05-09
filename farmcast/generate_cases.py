@@ -31,6 +31,7 @@ def generate_cases(n_turbines=3,
                    domain_edge_LR = [1., 1.],
                    domain_edge_HR = [0.2, 0.2], # extra spacing along x (left and right) and y (top and bottom ) in D
                    cmax = 5.,
+                   desired_OF_timestep=0.25,
                    output_dir=run_dir):
 
     # Create inflow directory
@@ -48,7 +49,7 @@ def generate_cases(n_turbines=3,
     NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR, GridWidth_LR, AnalysisTime_LR, \
     TimeStep_LR, HubHt_for_TS_LR = set_turbsim(
         n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, 
-        domain_edge=domain_edge_LR, dy=10., dz=10., res='low'
+        domain_edge=domain_edge_LR, dy=10., dz=10., res='low', TimeStep_HR=desired_OF_timestep,
     )
 
     turbsim_lr = []
@@ -103,7 +104,7 @@ def generate_cases(n_turbines=3,
                             for T in range(1, n_turbines + 1):
                                 # If .bts files exist, generate the time series file
                                 ts_lr_bts = ts_lr_filename[:-3] + ".bts"
-                                TimeStep_HR = 0.25
+                                TimeStep_HR = desired_OF_timestep
                                 
                                 if os.path.exists(ts_lr_bts):
                                     # Generate the time series file at the locations x and y
