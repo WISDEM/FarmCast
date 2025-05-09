@@ -113,6 +113,8 @@ def generate_cases(n_turbines=3,
                                     ymid = y
                                     zmid = 1. + 0.5*GridHeight_LR
                                     AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, z, ymid, zmid, TimeStep_HR, AnalysisTime_LR, T)
+                                else:
+                                    AnalysisTime_HR = AnalysisTime_LR
                                 
 
                                 NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR, GridWidth_HR, \
