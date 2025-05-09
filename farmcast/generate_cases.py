@@ -104,11 +104,16 @@ def generate_cases(n_turbines=3,
                                 # If .bts files exist, generate the time series file
                                 ts_lr_bts = ts_lr_filename[:-3] + ".bts"
                                 TimeStep_HR = 0.25
+                                
                                 if os.path.exists(ts_lr_bts):
                                     # Generate the time series file at the locations x and y
-                                    x = WT_X[T-1] + (domain_edge_LR[0] - domain_edge_HR[0]) * rotor_diameter
+                                    x = WT_X[T-1] - domain_edge_LR[0] * rotor_diameter
                                     y = WT_Y[T-1]
-                                    generateTimeSeriesFile(ts_lr_bts, x, y, hub_height, TimeStep_HR, AnalysisTime_LR, T)
+                                    z = hub_height
+                                    ymid = y
+                                    zmid = 1. + 0.5*GridHeight_LR
+                                    AnalysisTime_HR = generateTimeSeriesFile(ts_lr_bts, x, y, z, ymid, zmid, TimeStep_HR, AnalysisTime_LR, T)
+                                
 
                                 NumGrid_Z_HR, NumGrid_Y_HR, GridHeight_HR, GridWidth_HR, \
                                 _, _, HubHt_for_TS_HR = set_turbsim(
@@ -130,7 +135,7 @@ def generate_cases(n_turbines=3,
                                 # GridWidth_HR = GridHeight_HR # (1. + domain_edge_HR[1]) * rotor_diameter
                                 fst_vt["TurbSim"]["GridWidth"] = GridWidth_HR 
                                 fst_vt["TurbSim"]["TimeStep"] = TimeStep_HR
-                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_LR
+                                fst_vt["TurbSim"]["AnalysisTime"] = AnalysisTime_HR
                                 fst_vt["TurbSim"]["TurbModel"] = "TIMESR"
                                 UserFile = "\"" + ts_hr_filename[:-3] + ".txt" + "\""
                                 fst_vt["TurbSim"]["UserFile"] = UserFile

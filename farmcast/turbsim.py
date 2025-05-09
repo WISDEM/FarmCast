@@ -59,7 +59,7 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
             + 2 * domain_edge[1] * rotor_diameter
         )
         Height = hub_height  + 2 * rotor_diameter
-        TimeStep = 1. #np.round(np.min([1., Cmeander * rotor_diameter / (np.min(ws) * 10.0)]), 1)
+        TimeStep = Cmeander*rotor_diameter/(10*np.max(ws))
     else:
         Width = rotor_diameter * (1. + domain_edge[1])
         Height = hub_height  + 0.5 * rotor_diameter * (1. + domain_edge[1])
