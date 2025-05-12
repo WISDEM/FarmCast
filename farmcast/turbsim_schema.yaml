@@ -54,7 +54,7 @@ properties:
                 description: Output coherent turbulence time steps in AeroDyn form? (Generates RootName.cts)
             Clockwise:
                 type: boolean
-                default: True
+                default: False
                 description: Clockwise rotation looking downwind? (used only for full-field binary files - not necessary for AeroDyn)
             ScaleIEC:
                 type: integer
