@@ -108,7 +108,7 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
             f.write(f"#SBATCH --mail-user {slurm_email}\n")
             f.write("#SBATCH --mail-type BEGIN,END,FAIL\n")
             f.write("######SBATCH --partition=debug\n")
-            f.write("######SBATCH --qos=high\n")
+            f.write("#SBATCH --qos=high\n")
             f.write("######SBATCH --mem=1000GB      # RAM in MB\n")
             f.write("#SBATCH --output=job_log.%j.out  # %j will be replaced with the job ID\n")
 
