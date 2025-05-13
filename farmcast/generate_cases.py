@@ -204,7 +204,7 @@ def generate_cases(n_turbines=3,
                             X0_desired = np.asarray(WT_X)-LX_High/2  # high-res is centered on turbine location
                             Y0_desired = np.asarray(WT_Y)-LY_High/2   # high-res is centered on turbine location
                             X0_High = (X0_Low + np.floor((X0_desired-X0_Low)/dX_High)*dX_High).tolist()
-                            Y0_High = (Y0_Low + np.floor((Y0_desired-Y0_Low)/dY_High)*dY_High).tolist()
+                            Y0_High = Y0_desired.tolist() # (Y0_Low + np.floor((Y0_desired-Y0_Low)/dY_High)*dY_High).tolist()
                             Z0_High = [Z0_Low, Z0_Low, Z0_Low]
 
 
