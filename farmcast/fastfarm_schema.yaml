@@ -207,7 +207,7 @@ properties:
                 description: Name of file containing InflowWind module input parameters (quoted string)
             Mod_Wake:
                 type: integer
-                default: 1
+                default: 2
                 description: Switch between wake formulations 1)Polar, 2)Curl, 3)Cartesian (-) (switch)
             RotorDiamRef:
                 type: number
