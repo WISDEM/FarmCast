@@ -19,10 +19,10 @@ AeroAcousticsInput.dat AA_InputFile - AeroAcoustics input file [used only when C
 103500.0               Patm        - Atmospheric pressure (Pa) [used only when CavitCheck=True]
 1700.0                 Pvap        - Vapour pressure of working fluid (Pa) [used only when CavitCheck=True]
 ======  Blade-Element/Momentum Theory Options  ====================================================== [unused when Wake_Mod=0 or 3, except for BEM_Mod]
-1                      BEM_Mod     - BEM model {1=legacy NoSweepPitchTwist, 2=polar} (switch) [used for all Wake_Mod to determine output coordinate system]
+2                      BEM_Mod     - BEM model {1=legacy NoSweepPitchTwist, 2=polar} (switch) [used for all Wake_Mod to determine output coordinate system]
 --- Skew correction
 1                      Skew_Mod    - Skew model {0=No skew model, -1=Remove non-normal component for linearization, 1=skew model active}
-False                  SkewMomCorr - Turn the skew momentum correction on or off [used only when Skew_Mod=1]
+True                   SkewMomCorr - Turn the skew momentum correction on or off [used only when Skew_Mod=1]
 1                      SkewRedistr_Mod - Type of skewed-wake correction model (switch) {0=no redistribution, 1=Glauert/Pitt/Peters, default=1} [used only when Skew_Mod=1]
 1.4726215563702154     SkewRedistrFactor - Constant used in Pitt/Peters skewed wake model {or "default" is 15/32*pi} (-) [used only when Skew_Mod=1 and SkewRedistr_Mod=1]
 --- BEM algorithm 
@@ -49,7 +49,7 @@ True                   AoA34       - Sample the angle of attack (AoA) at the 3/4
 3                      UA_Mod      - Unsteady Aero Model Switch (switch) {0=Quasi-steady (no UA), 2=B-L Gonzalez, 3=B-L Minnema/Pierce, 4=B-L HGM 4-states, 5=B-L HGM+vortex 5 states, 6=Oye, 7=Boeing-Vertol}
 True                   FLookup     - Flag to indicate whether a lookup for f' will be calculated (TRUE) or whether best-fit exponential equations will be used (FALSE); if FALSE S1-S4 must be provided in airfoil input files (flag) [used only when UA_Mod>0]
 3               IntegrationMethod  - Switch to indicate which integration method UA uses (1=RK4, 2=AB4, 3=ABM4, 4=BDF2)
-0                      UAStartRad  - Starting radius for dynamic stall (fraction of rotor radius [0.0,1.0]) [used only when UA_Mod>0; if line is missing UAStartRad=0]
+0.1                    UAStartRad  - Starting radius for dynamic stall (fraction of rotor radius [0.0,1.0]) [used only when UA_Mod>0; if line is missing UAStartRad=0]
 1                      UAEndRad    - Ending radius for dynamic stall (fraction of rotor radius [0.0,1.0]) [used only when UA_Mod>0; if line is missing UAEndRad=1]
 ======  Airfoil Information =========================================================================
 1                      AFTabMod    - Interpolation method for multiple airfoil tables {1=1D interpolation on AoA (first table only); 2=2D interpolation on AoA and Re; 3=2D interpolation on AoA and UserProp} (-)
