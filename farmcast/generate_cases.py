@@ -258,6 +258,12 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["dY_High"] = dY_High
                                         fst_vt["FASTFarm"]["dZ_High"] = dZ_High
                                         fst_vt["FASTFarm"]["WrDisDT"] = TimeStep_LR
+                                        dr = 5.
+                                        fst_vt["FASTFarm"]['dr'] = dr
+                                        fst_vt["FASTFarm"]['NumRadii']  = int(np.ceil(3*rotor_diameter/(2*dr) + 1))
+                                        fst_vt["FASTFarm"]['NumPlanes'] = int(np.ceil(20*rotor_diameter/(TimeStep_LR*ws_i*(1-1/6))))
+                                        fst_vt["FASTFarm"]['f_c'] = 1.28*ws_i/rotor_diameter
+
                                         
                                         os.makedirs(os.path.join(case_dir, "fastfarm"), exist_ok=True)
                                         output_path_fsft = os.path.join(case_dir, "fastfarm", "generated.fstf")
