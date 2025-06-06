@@ -260,7 +260,7 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["dZ_High"] = dZ_High
                                         fst_vt["FASTFarm"]["WrDisDT"] = TimeStep_LR
 
-                                        fst_vt["FASTFarm"]["Mod_Wake"] == Mod_Wake
+                                        fst_vt["FASTFarm"]["Mod_Wake"] = Mod_Wake
                                         if fst_vt["FASTFarm"]["Mod_Wake"] == 1: # Polar model
                                             dr = 5.
                                         else: # Curled; Cartesian
