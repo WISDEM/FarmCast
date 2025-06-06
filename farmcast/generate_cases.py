@@ -31,6 +31,7 @@ def generate_cases(n_turbines=3,
                    domain_edge_LR = [1., 1.],
                    domain_edge_HR = [0.3, 0.3], # extra spacing along x (left and right) and y (top and bottom ) in D
                    cmax = 5.,
+                   Mod_Wake = 2,  # 1: Polar, 2: Curled, 3: Cartesian
                    desired_OF_timestep=0.25,
                    output_dir=run_dir):
 
@@ -259,6 +260,7 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["dZ_High"] = dZ_High
                                         fst_vt["FASTFarm"]["WrDisDT"] = TimeStep_LR
 
+                                        fst_vt["FASTFarm"]["Mod_Wake"] == Mod_Wake
                                         if fst_vt["FASTFarm"]["Mod_Wake"] == 1: # Polar model
                                             dr = 5.
                                         else: # Curled; Cartesian
