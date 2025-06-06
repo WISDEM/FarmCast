@@ -5,8 +5,8 @@
 #SBATCH --job-name=FC_Ex
 #SBATCH --mail-user pbortolo@nrel.gov
 #SBATCH --mail-type BEGIN,END,FAIL
-#SBATCH --partition=debug
-#SBATCH --qos=high
+####SBATCH --partition=debug
+####SBATCH --qos=high
 ######SBATCH --mem=1000GB      # RAM in MB
 #SBATCH --output=job_log.%j.out  # %j will be replaced with the job ID
 
