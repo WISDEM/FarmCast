@@ -258,7 +258,11 @@ def generate_cases(n_turbines=3,
                                         fst_vt["FASTFarm"]["dY_High"] = dY_High
                                         fst_vt["FASTFarm"]["dZ_High"] = dZ_High
                                         fst_vt["FASTFarm"]["WrDisDT"] = TimeStep_LR
-                                        dr = 5.
+
+                                        if fst_vt["FASTFarm"]["Mod_Wake"] == 1: # Polar model
+                                            dr = 5.
+                                        else: # Curled; Cartesian
+                                            dr = round(rotor_diameter/15)
                                         fst_vt["FASTFarm"]['dr'] = dr
                                         fst_vt["FASTFarm"]['NumRadii']  = int(np.ceil(3*rotor_diameter/(2*dr) + 1))
                                         fst_vt["FASTFarm"]['NumPlanes'] = int(np.ceil(20*rotor_diameter/(TimeStep_LR*ws_i*(1-1/6))))
