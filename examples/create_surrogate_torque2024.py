@@ -37,6 +37,8 @@ T1_yaw_misalignment = np.arange(-30., 60., 30.)
 T2_yaw_misalignment = np.arange(-20., 40., 20.)
 # Array of curtailment values for T1 and T2 in percentage
 curtailment_T1T2 = np.arange(60., 140., 40.)
+# Wake model
+Mod_Wake = 2 # Curled, 1 Polar, 3 Cartesian
 
 # Estimate the total number of cases
 n_cases = len(ws) * n_seeds * len(TI) * len(shear) * len(spacing) * len(wind_direction) * len(T1_yaw_misalignment) * len(T2_yaw_misalignment) * len(curtailment_T1T2)
@@ -57,7 +59,8 @@ turbsim_lr, turbsim_hr = generate_cases(
     T1_yaw_misalignment=T1_yaw_misalignment,
     T2_yaw_misalignment=T2_yaw_misalignment,
     curtailment_T1T2=curtailment_T1T2,
-    output_dir=output_dir
+    output_dir=output_dir,
+    Mod_Wake = Mod_Wake,
 )
 
 # Create the slurm files for low res turbsim
