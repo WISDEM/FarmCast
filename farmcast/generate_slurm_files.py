@@ -46,7 +46,7 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
             f.write(f"#SBATCH --mail-user {slurm_email}\n")
             f.write("######SBATCH --mail-type BEGIN,END,FAIL\n")
             f.write("######SBATCH --partition=debug\n")
-            f.write("######SBATCH --qos=high\n")
+            f.write("#SBATCH --qos=high\n")
             f.write("######SBATCH --mem=1000GB      # RAM in MB\n")
             f.write("#SBATCH --output=job_log.%j.out  # %j will be replaced with the job ID\n")
 
