@@ -1,7 +1,7 @@
 import numpy as np
 from farmcast.utils import getMultipleOf
 
-def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, Cmeander = 1.9, transient = 120, analysis_time = 600, domain_edge = [1., 1., 1., 1.], dy = 10., dz = 10., res = 'low', TimeStep_HR=0.25):
+def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, Cmeander = 1.9, transient = 120, analysis_time = 600, domain_edge = [1., 1., 1., 1.], dy = 10., dz = 10., res = 'low', TimeStep_HR=0.25, mod_wake=1):
     """
     Configure low-resolution TurbSim parameters for wind turbine simulations.
 
@@ -31,7 +31,8 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
         The grid spacing in the y-direction (in meters). Default is 10 m.
     dz : float, optional
         The grid spacing in the z-direction (in meters). Default is 10 m.
-
+    mod_wake : int, optional
+        A modifier for the wake model. Default is 1 (Polar). 2 Curled, 3 Cartesian.
     Returns:
     --------
     tuple
@@ -60,7 +61,10 @@ def set_turbsim(n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direct
             + 2 * domain_edge[1] * rotor_diameter
         )
         Height = hub_height  + 2 * rotor_diameter
-        TimeStep_Desired = Cmeander*rotor_diameter/(10*np.max(ws))
+        if mod_wake == 1:
+            TimeStep_Desired = Cmeander*rotor_diameter/(10*np.max(ws))
+        elif mod_wake == 2:
+            TimeStep_Desired = (rotor_diameter/15)/(2*np.max(ws))
         TimeStep = getMultipleOf(TimeStep_Desired, multipleof=TimeStep_HR)
     else:
         Width = rotor_diameter * (1. + domain_edge[1])

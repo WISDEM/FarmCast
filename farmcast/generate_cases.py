@@ -50,7 +50,7 @@ def generate_cases(n_turbines=3,
     NumGrid_Z_LR, NumGrid_Y_LR, GridHeight_LR, GridWidth_LR, AnalysisTime_LR, \
     TimeStep_LR, HubHt_for_TS_LR = set_turbsim(
         n_turbines, rotor_diameter, hub_height, ws, spacing, wind_direction, 
-        domain_edge=domain_edge_LR, dy=10., dz=10., res='low', TimeStep_HR=desired_OF_timestep,
+        domain_edge=domain_edge_LR, dy=10., dz=10., res='low', TimeStep_HR=desired_OF_timestep, mod_wake = Mod_Wake,
     )
 
     turbsim_lr = []
