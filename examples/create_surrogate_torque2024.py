@@ -22,15 +22,15 @@ model = "IEA-3.4-130-RWT"
 rotor_diameter = 130.0
 hub_height = 110.0
 # Array of wind speeds in m/s
-ws = [6., 10., 14.]
+ws = [10.]
 # Number of seeds
-n_seeds = 12
+n_seeds = 1
  # Array of turbulence intensities
-TI = [0.1, 0.2]
+TI = [0.1]
 # Array of shear coefficients
-shear = [0.1 , 0.2]
+shear = [0.1]
 # Array of turbine spacing in rotor diameters
-spacing = [4., 6., 8.]
+spacing = [4.]
 # Array of wind directions in degrees
 wind_direction = np.arange(-8., 16., 8.)
 # Array of yaw misalignments for the upstream turbine (T1) in degrees
