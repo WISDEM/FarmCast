@@ -285,7 +285,7 @@ def generate_cases(n_turbines=3,
                                         os.makedirs(rosco_dir, exist_ok=True)
                                         for i in range(1, n_turbines + 1):
                                             dst = os.path.join(rosco_dir, f"libdiscon_T{i}.so")
-                                            if os.path.exists(src):
+                                            if os.path.exists(path2controller):
                                                 os.system(f"cp {path2controller} {dst}")
                                         
                                         # Rename the .bts files to Low and High
