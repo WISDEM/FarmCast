@@ -33,7 +33,8 @@ def generate_cases(n_turbines=3,
                    cmax = 5.,
                    Mod_Wake = 2,  # 1: Polar, 2: Curled, 3: Cartesian
                    desired_OF_timestep=0.25,
-                   output_dir=run_dir):
+                   output_dir=run_dir,
+                   path2controller=None):
 
     # Create inflow directory
     inflow_dir = os.path.join(output_dir, "inflows")
@@ -283,10 +284,9 @@ def generate_cases(n_turbines=3,
                                         rosco_dir = os.path.join(case_dir, "rosco")
                                         os.makedirs(rosco_dir, exist_ok=True)
                                         for i in range(1, n_turbines + 1):
-                                            src = os.path.join(base_dir, "turbines", "rosco", "libdiscon.so")
                                             dst = os.path.join(rosco_dir, f"libdiscon_T{i}.so")
                                             if os.path.exists(src):
-                                                os.system(f"cp {src} {dst}")
+                                                os.system(f"cp {path2controller} {dst}")
                                         
                                         # Rename the .bts files to Low and High
                                         case_inflow_dir = os.path.join(case_dir, "inflow")

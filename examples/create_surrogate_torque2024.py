@@ -10,9 +10,10 @@ base_dir = os.path.dirname(run_dir)
 hpc_email = 'pbortolo@nrel.gov'
 path2turbsim = '/projects/windse/cbay/solvers/turbsim'
 path2fastfarm = '/projects/windse/cbay/solvers/FAST.Farm'
+path2controller = '/home/pbortolo/ROSCO/ROSCO_v2p9p7d/rosco/controller/build/libdiscon.so'
 
 # Set the output directory for the generated files
-output_dir = os.path.join(os.path.dirname(base_dir), "FarmCast_runs")
+output_dir = "/scratch/pbortolo/FarmCast_runs"
 
 # Turbines in the farm
 n_turbines = 3
@@ -20,15 +21,15 @@ model = "IEA-3.4-130-RWT"
 rotor_diameter = 130.0
 hub_height = 110.0
 # Array of wind speeds in m/s
-ws = [6., 10.]
+ws = [6., 10., 14.]
 # Number of seeds
-n_seeds = 6
+n_seeds = 12
  # Array of turbulence intensities
-TI = [0.06, 0.12]
+TI = [0.1, 0.2]
 # Array of shear coefficients
-shear = [0.2]
+shear = [0.1 , 0.2]
 # Array of turbine spacing in rotor diameters
-spacing = [4., 6.]
+spacing = [4., 6., 8.]
 # Array of wind directions in degrees
 wind_direction = np.arange(-8., 16., 8.)
 # Array of yaw misalignments for the upstream turbine (T1) in degrees
@@ -61,6 +62,7 @@ turbsim_lr, turbsim_hr = generate_cases(
     curtailment_T1T2=curtailment_T1T2,
     output_dir=output_dir,
     Mod_Wake = Mod_Wake,
+    path2controller=path2controller,
 )
 
 # Create the slurm files for low res turbsim
