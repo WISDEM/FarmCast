@@ -101,6 +101,8 @@ def generate_openfast(model, yaw_T1, yaw_T2, curtailment, output_path_openfast, 
             for line in src:
                 if "DLL_FileName" in line:
                     line = line.replace("../rosco/libdiscon.so", f"../rosco/libdiscon_{turbine_id}.so")
+                if "DLL_InFile" in line:
+                    line = line.replace("IEA-3.4-130-RWT_DISCON.IN", f"IEA-3.4-130-RWT_DISCON_{turbine_id}.IN")
                 sdst.write(line.replace(f"{model}_ServoDyn.dat", f"{model}_ServoDyn_{turbine_id}.dat"))
             sdst.close()
         # DISCON
