@@ -40,13 +40,13 @@ def create_slurm_ff_files(n_cases, n_turbines, output_dir, processors_per_node =
         with open(slurm_filename, "w") as f:
             f.write("#!/bin/bash\n")
             f.write(f"#SBATCH --account={alloc}\n")
-            f.write("#SBATCH --time=04:00:00\n")
+            f.write("#SBATCH --time=24:00:00\n")
             f.write("#SBATCH --nodes=1\n")
             f.write(f"#SBATCH --job-name=FF_{i}\n")
             f.write(f"#SBATCH --mail-user {slurm_email}\n")
             f.write("######SBATCH --mail-type BEGIN,END,FAIL\n")
             f.write("######SBATCH --partition=debug\n")
-            f.write("#SBATCH --qos=high\n")
+            f.write("######SBATCH --qos=high\n")
             f.write("######SBATCH --mem=1000GB      # RAM in MB\n")
             f.write("#SBATCH --output=job_log.%j.out  # %j will be replaced with the job ID\n")
 
@@ -102,7 +102,7 @@ def create_slurm_ts_files(turbsim_files, slurm_dir, processors_per_node = 104, s
         with open(slurm_filename, "w") as f:
             f.write("#!/bin/bash\n")
             f.write(f"#SBATCH --account={alloc}\n")
-            f.write("#SBATCH --time=01:00:00\n")
+            f.write("#SBATCH --time=04:00:00\n")
             f.write("#SBATCH --nodes=1\n")
             f.write(f"#SBATCH --job-name=TSLR_{i}\n")
             f.write(f"#SBATCH --mail-user {slurm_email}\n")
